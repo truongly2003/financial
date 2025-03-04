@@ -10,7 +10,7 @@ function UpdateTransaction() {
         const fetchTransaction = async () => {
           try {
             const response = await getTransactionById(id)
-            setTransaction(response);
+            setTransaction(response.data);
           } catch (error) {
             console.error("Lỗi khi lấy dữ liệu giao dịch:", error);
           }

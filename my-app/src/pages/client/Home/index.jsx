@@ -28,7 +28,7 @@ function Home() {
         const response = await axios.get(
           "http://localhost:8080/api/transaction/1"
         );
-        setTransactions(response.data);
+        setTransactions(response.data.data);
       } catch (error) {
         console.error("Error fetching transactions:", error);
       }
@@ -228,7 +228,7 @@ function Home() {
               </p>
               <p className="flex justify-between">
                 <span className="text-gray-500">Ghi chú</span>{" "}
-                <span>{selectedTransaction.note || "Không có"}</span>
+                <span>{selectedTransaction.description || "Không có"}</span>
               </p>
             </div>
 

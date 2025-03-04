@@ -3,11 +3,10 @@ package com.example.financial.controller;
 import com.example.financial.dto.request.TransactionRequest;
 import com.example.financial.dto.response.ApiResponse;
 import com.example.financial.dto.response.TransactionResponse;
-import com.example.financial.entity.Transaction;
-import com.example.financial.mapper.TransactionMapper;
 import com.example.financial.service.ITransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -23,59 +22,65 @@ public class TransactionController {
 
     //    get list transaction
     @GetMapping("/{id}")
-    public List<TransactionResponse> getTransactionByUser(@PathVariable Integer id) {
-        return transactionService.getAllTransactionByUserId(id);
+    public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactionByUser(@PathVariable Integer id) {
+        List<TransactionResponse> transactionResponses = transactionService.getAllTransactionByUserId(id);
+        return ResponseEntity.ok(new ApiResponse<>(200, "lấy danh sách giao dịch thành công", transactionResponses));
     }
 
     // get transaction by id
+//    @GetMapping()
+//    public ResponseEntity<TransactionResponse> getTransactionById(@RequestParam Integer transactionId) {
+//        return ResponseEntity.ok(transactionService.getTransactionById(transactionId));
+//    }
     @GetMapping()
-    public ResponseEntity<TransactionResponse> getTransactionById(@RequestParam Integer transactionId) {
-        return ResponseEntity.ok(transactionService.getTransactionById(transactionId));
+    public ResponseEntity<ApiResponse<TransactionResponse>> getTransactionById(@RequestParam Integer transactionId) {
+        return ResponseEntity.ok(new ApiResponse<>(200, "success", transactionService.getTransactionById(transactionId)));
     }
 
     @PostMapping
-    public ResponseEntity<String> addTransaction(@RequestBody TransactionRequest request) {
+    public ResponseEntity<ApiResponse<Boolean>> addTransaction(@RequestBody TransactionRequest request) {
         try {
             boolean create = transactionService.addTransaction(request);
             if (create) {
-                return ResponseEntity.ok("Thêm giao dịch thành công.");
+                return ResponseEntity.ok(new ApiResponse<>(201, "Thêm giao dịch thành công bại", true));
             } else {
-                return ResponseEntity.ok("Thêm giao dịch thất bại.");
+                return ResponseEntity.ok(new ApiResponse<>(201, "Thêm giao dịch thất bại", false));
             }
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.internalServerError().body("An error occurred: " + ex.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "Lỗi hệ thống: " + e.getMessage(), false));
         }
     }
+
     @PutMapping("/{transactionId}")
-    public ResponseEntity<String> updateTransaction(@PathVariable Integer transactionId, @RequestBody TransactionRequest request) {
+    public ResponseEntity<ApiResponse<Boolean>> updateTransaction(@PathVariable Integer transactionId, @RequestBody TransactionRequest request) {
         try {
-            boolean create = transactionService.updateTransaction(transactionId,request);
+            boolean create = transactionService.updateTransaction(transactionId, request);
             if (create) {
-                return ResponseEntity.ok("cập nhật giao dịch thành công.");
+                return ResponseEntity.ok(new ApiResponse<>(201, "Cập nhật giao dịch thành công bại", true));
             } else {
-                return ResponseEntity.ok("cập nhật giao dịch thất bại.");
+                return ResponseEntity.ok(new ApiResponse<>(201, "Cập nhật giao dịch thành công bại", true));
             }
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.internalServerError().body("An error occurred: " + ex.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "Lỗi hệ thống: " + e.getMessage(), false));
         }
     }
+
     @DeleteMapping
-    public ResponseEntity<String> deleteTransactionById(@RequestParam Integer transactionId) {
+    public ResponseEntity<ApiResponse<Boolean>> deleteTransactionById(@RequestParam Integer transactionId) {
         try {
-            boolean delete=transactionService.deleteTransaction(transactionId);
+            boolean delete = transactionService.deleteTransaction(transactionId);
             if (delete) {
-                return ResponseEntity.ok("xóa giao dịch thành công.");
+                return ResponseEntity.ok(new ApiResponse<>(201, "Xóa giao dịch thành công bại", true));
+
             } else {
-                return ResponseEntity.ok("xóa giao dịch thất bại.");
+                return ResponseEntity.ok(new ApiResponse<>(201, "Xóa giao dịch thành công bại", true));
+
             }
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.internalServerError().body("An error occurred: " + ex.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "Lỗi hệ thống: " + e.getMessage(), false));
         }
     }
 }

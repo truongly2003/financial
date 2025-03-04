@@ -45,7 +45,7 @@ function TransactionForm({ initialTransaction }) {
       } else {
         response = await addTransaction(transaction);
       }
-      alert(response);
+      alert(response.message);
     } catch (error) {
       console.log(error);
     }

@@ -30,8 +30,8 @@ function Transaction() {
   const handleAddTransaction = async () => {
     try {
       const data = await addTransaction(transaction);
-      if (data) {
-        alert(data);
+      if (data.data) {
+        alert(data.message);
       }
     } catch (error) {
       console.log(error);
