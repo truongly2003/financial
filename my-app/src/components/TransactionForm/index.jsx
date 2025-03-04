@@ -1,8 +1,13 @@
-import { useState } from "react";
-import CategorySelector from "@/components/CategorySelector";
-import { addTransaction } from "@/services/TransactionService";
+import { useEffect, useState } from "react";
 
-function Transaction() {
+import PropTypes from "prop-types";
+import CategorySelector from "@/components/CategorySelector";
+import {
+  addTransaction,
+  updateTransaction,
+} from "@/services/TransactionService";
+
+function TransactionForm({ initialTransaction }) {
   const [transaction, setTransactions] = useState({
     userId: 1,
     amount: "",
@@ -13,6 +18,11 @@ function Transaction() {
     paymentMethod: "",
     transactionStatus: "complete",
   });
+  useEffect(() => {
+    if (initialTransaction) {
+      setTransactions(initialTransaction);
+    }
+  }, [initialTransaction]);
   const handleChangeTransaction = (e) => {
     setTransactions({
       ...transaction,
@@ -27,12 +37,15 @@ function Transaction() {
     });
   };
 
-  const handleAddTransaction = async () => {
+  const handleSubmit = async () => {
     try {
-      const data = await addTransaction(transaction);
-      if (data) {
-        alert(data);
+      let response;
+      if (transaction.id) {
+        response = await updateTransaction(transaction.id, transaction);
+      } else {
+        response = await addTransaction(transaction);
       }
+      alert(response);
     } catch (error) {
       console.log(error);
     }
@@ -41,7 +54,10 @@ function Transaction() {
   return (
     <div>
       <div className="bg-white shadow-md rounded-lg mx-4 mt-4 p-4">
-        <CategorySelector onSelectCategory={handleSelectCategory} />
+        <CategorySelector
+          onSelectCategory={handleSelectCategory}
+          selectedCategoryId={Number(transaction.categoryId)}
+        />
       </div>
       {/* Nhập số tiền */}
       <div className="bg-white shadow-md rounded-lg mx-4 mt-4 p-4">
@@ -65,9 +81,9 @@ function Transaction() {
 
           <button
             className="w-full mt-4 bg-blue-500 text-white py-2 rounded-lg font-semibold"
-            onClick={handleAddTransaction}
+            onClick={handleSubmit}
           >
-            Thêm giao dịch
+            {transaction.id ? "Cập nhật giao dịch" : "Thêm giao dịch"}
           </button>
         </div>
         {/* )} */}
@@ -75,5 +91,7 @@ function Transaction() {
     </div>
   );
 }
-
-export default Transaction;
+TransactionForm.propTypes = {
+  initialTransaction: PropTypes.object,
+};
+export default TransactionForm;

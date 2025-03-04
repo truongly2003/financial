@@ -6,15 +6,21 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 const titles = {
   "/": "Tổng quan",
-  "/transaction": "Giao dịch ",
+  "/transaction": "Thêm giao dịch ",
+  "/transaction/:id": "Cập nhật giao dịch ",
   "/statistical": "Thống kê",
-  "/catolog": "Danh mục",
+  "/catalog": "Danh mục",
 };
 function DefaultLayout({ children }) {
   const location = useLocation();
   const [title, setTitle] = useState("");
   useEffect(() => {
-    setTitle(titles[location.pathname] || "Không xác định");
+    let newTitle=titles[location.pathname] || "Không xác định"
+    if (/^\/transaction\/\d+$/.test(location.pathname)) {
+      newTitle = "Cập nhật giao dịch";
+    }
+    
+    setTitle(newTitle);
   }, [location.pathname]);
   return (
     <div className="flex h-screen">

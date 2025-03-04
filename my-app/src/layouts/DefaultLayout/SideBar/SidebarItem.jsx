@@ -40,9 +40,9 @@ const SidebarItem = ({ icon: Icon, label, to, children }) => {
   );
 };
 SidebarItem.propTypes = {
-  icon: PropTypes.node,
+  icon: PropTypes.elementType,
   label: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   to: PropTypes.string,
 };
 export default SidebarItem;

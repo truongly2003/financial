@@ -68,7 +68,7 @@ const Header = ({ icon: Icon }) => {
 };
 
 Header.propTypes = {
-  icon: PropTypes.node,
+  icon: PropTypes.elementType,
 };
 
 export default Header;

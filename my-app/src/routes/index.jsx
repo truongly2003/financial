@@ -8,7 +8,9 @@ import Report from "@client/Report";
 import Catalog from "@client/Catalog";
 import Option from "@client/Option";
 import Budget from "@client/Budget";
-import Transaction from "@client/Transaction";
+// import Transaction from "@client/Transaction";
+import AddTransaction from "@/pages/client/Transaction/addTransaction";
+import UpdateTransaction from "@/pages/client/Transaction/updateTransaction";
 import Debt from "@/pages/client/Debt";
 import Goal from "@/pages/client/Goal";
 // authentication
@@ -23,7 +25,9 @@ const publicRoutes = [
   { path: routes.Catalog, component: Catalog, layout: DefaultLayout },
   { path: routes.Option, component: Option, layout: DefaultLayout },
   { path: routes.Budget, component: Budget, layout: DefaultLayout },
-  { path: routes.Transaction, component: Transaction, layout: DefaultLayout },
+  { path: routes.AddTransaction, component: AddTransaction, layout: DefaultLayout },
+  { path: routes.UpdateTransaction, component: UpdateTransaction, layout: DefaultLayout },
+
   { path: routes.Goal, component: Goal, layout: DefaultLayout },
   { path: routes.Debt, component: Debt, layout: DefaultLayout },
 

@@ -21,7 +21,9 @@ const Sidebar = () => {
       <SidebarItem icon={LayoutDashboard} label="Tổng quan">
         <SidebarItem icon={Handshake} label="Tổng thu & chi" to="/" />
         <SidebarItem icon={ChartPie} label="Biểu đồ thống kê" to="/statistical"/>
+
       </SidebarItem>
+
       <SidebarItem icon={BadgeDollarSign} label="Giao dịch" to="/transaction" />
       <SidebarItem icon={ChartBarStacked} label="Danh mục" to="/catalog"/>
       <SidebarItem icon={Goal} label="Mục tiêu" to="/goal"/>

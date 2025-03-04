@@ -1,57 +1,72 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight, Plus, CircleX } from "lucide-react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import ICONS from "@/components/Icons";
+import { deleteTransaction } from "@/services/TransactionService";
 // import { object } from "prop-types";
 const balanceCards = [
   { amount: "96,800,000", label: "Số dư", color: "bg-red-400" },
   { amount: "68,000,000", label: "Chi tiêu", color: "bg-blue-400" },
   { amount: "64,000,000", label: "Thu nhập", color: "bg-green-400" },
-  { amount: "32,000,000", label: "Tổng số tiền lãi", color: "bg-yellow-400" },
-  { amount: "24,000,000", label: "Tổng số tiền thu nợ", color: "bg-pink-400" },
-  {
-    amount: "13,500,000",
-    label: "Tổng số tiền tiết kiệm",
-    color: "bg-purple-400",
-  },
+  { amount: "13,500,000", label: "Tiết kiệm", color: "bg-purple-400" },
 ];
 function Home() {
-  const [activeFilter, setActiveFilter] = useState("tuần"); // Bộ lọc mặc định
-
-  const transactions = {
-    expense: [
-      {
-        id: 1,
-        category: "Sức khỏe",
-        amount: 100000,
-        icon: "❤️",
-        color: "bg-red-500",
-      },
-      {
-        id: 2,
-        category: "Ăn uống",
-        amount: 50000,
-        icon: "🍽️",
-        color: "bg-orange-500",
-      },
-    ],
-    income: [
-      {
-        id: 1,
-        category: "Lương",
-        amount: 5000000,
-        icon: "💰",
-        color: "bg-green-500",
-      },
-      {
-        id: 2,
-        category: "Tiền thưởng",
-        amount: 200000,
-        icon: "🎉",
-        color: "bg-blue-500",
-      },
-    ],
+  const [transaction, setTransactions] = useState([]);
+  const [activeFilter, setActiveFilter] = useState("tuần");
+  const [isModalDetailTransaction, setIsModalDetailTransaction] =
+    useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const navigate = useNavigate();
+  const handleEditTransaction = (id) => {
+    navigate(`/transaction/${id}`);
   };
- 
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/transaction/1"
+        );
+        setTransactions(response.data);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
+
+  const groupedTransactions = transaction.reduce((acc, item) => {
+    const dateKey = item.transactionDate;
+    if (!acc[dateKey]) {
+      acc[dateKey] = { transactions: [], totalExpense: 0, totalIncome: 0 };
+    }
+    acc[dateKey].transactions.push(item);
+    if (item.transactionType === "expense") {
+      acc[dateKey].totalExpense += item.amount;
+    } else if (item.transactionType === "income") {
+      acc[dateKey].totalIncome += item.amount;
+    }
+
+    return acc;
+  }, {});
+  const handleDetailTransaction = (item) => {
+    setSelectedTransaction(item);
+    setIsModalDetailTransaction(true);
+  };
+  const handleCloseModalDetailTransaction = () => {
+    setIsModalDetailTransaction(false);
+    setSelectedTransaction(null);
+  };
+  const handleDeleteTransaction=async (id)=>{
+    try {
+      const response=await deleteTransaction(id)
+      alert(response)
+    } catch (error) {
+      console.error(error)
+    }
+  }
   return (
     <div className="min-h-screen bg-gray-100 ">
       <div className="rounded-lg">
@@ -103,47 +118,136 @@ function Home() {
 
       {/* Danh sách giao dịch */}
       <div className="mx-4 mt-4">
-        {/* Duyệt qua cả expense và income */}
-        {Object.entries(transactions).map(([type, list]) => (
-          <div key={type}>
-            {list.map((transaction) => (
-              <div
-                key={transaction.id}
-                className="bg-white shadow-md rounded-lg p-4 flex justify-between items-center mb-2"
-              >
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`w-10 h-10 flex items-center justify-center ${transaction.color} text-white rounded-full`}
-                  >
-                    {transaction.icon}
-                  </div>
-                  <div>
-                    <p className="text-gray-700 font-medium">
-                      {transaction.category}
-                    </p>
-                    <p className="text-xs text-gray-500">100%</p>
-                  </div>
-                </div>
-                <p
-                  className={`font-bold ${
-                    type === "income" ? "text-green-500" : "text-red-500"
-                  }`}
-                >
-                  {transaction.amount.toLocaleString()} đ
-                </p>
+        {Object.entries(groupedTransactions).map(([date, data], index) => (
+          <div key={index} className="mb-4">
+            {/* Hiển thị ngày, tổng chi tiêu và tổng thu nhập */}
+            <div className="flex justify-between items-center bg-yellow-100 p-2 rounded-lg">
+              <p className="text-gray-600 font-semibold">{date}</p>
+              <div className="text-sm text-gray-500 flex gap-4">
+                <span>Chi tiêu: - {data.totalExpense.toLocaleString()} đ</span>
+                <span>Thu nhập: + {data.totalIncome.toLocaleString()} đ</span>
               </div>
-            ))}
+            </div>
+
+            {data.transactions.map((item, idx) => {
+              const iconData = ICONS[item.icon] || {
+                icon: "?",
+                color: "bg-gray-400",
+              };
+              return (
+                <div
+                  key={idx}
+                  className="bg-white shadow-md rounded-lg p-4 flex justify-between items-center mt-2 mb-2 cursor-pointer"
+                  onClick={() => handleDetailTransaction(item)}
+                >
+                  <div className="flex items-center gap-2 ">
+                    <div
+                      className={`w-10 h-10 flex items-center justify-center ${iconData.color} text-white rounded-full`}
+                    >
+                      {iconData.icon}
+                    </div>
+                    <div>
+                      <p className="text-gray-700 font-medium">
+                        {item.categoryName}
+                      </p>
+                    </div>
+                  </div>
+                  <p
+                    className={`font-bold ${
+                      item.transactionType === "income"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {`${
+                      item.transactionType === "income" ? "+" : "-"
+                    }${item.amount.toLocaleString()} đ`}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>
 
-      {/* Nút Thêm giao dịch */}
+      {/* add transaction */}
       <Link
         className="fixed bottom-16 right-16 bg-yellow-400 text-black p-4 rounded-full shadow-lg hover:bg-yellow-500"
         to="/transaction"
       >
         <Plus size={24} />
       </Link>
+
+      {/* modal detail transaction */}
+      {isModalDetailTransaction && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={handleCloseModalDetailTransaction}
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg w-80 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="bg-yellow-400 p-4 rounded-lg flex items-center">
+              <div className="w-10 h-10 flex items-center justify-center bg-yellow-500 text-white rounded-full mr-2">
+                {ICONS[selectedTransaction.icon]?.icon || "?"}
+              </div>
+              <h2 className="text-lg font-bold text-gray-800">
+                {selectedTransaction.categoryName}
+              </h2>
+            </div>
+
+            {/* Nội dung giao dịch */}
+            <div className="p-4 text-gray-700">
+              <p className="flex justify-between">
+                <span className="text-gray-500">Danh mục</span>
+                <span>
+                  {selectedTransaction.categoryType === "income"
+                    ? "Thu nhập"
+                    : "Chi tiêu"}
+                </span>
+              </p>
+              <p className="flex justify-between">
+                <span className="text-gray-500">Số tiền</span>
+                <span
+                  className={`font-bold ${
+                    selectedTransaction.transactionType === "income"
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {selectedTransaction.transactionType === "income" ? "+" : "-"}
+                  {selectedTransaction.amount.toLocaleString()} đ
+                </span>
+              </p>
+
+              <p className="flex justify-between">
+                <span className="text-gray-500">Ngày</span>{" "}
+                <span>{selectedTransaction.transactionDate}</span>
+              </p>
+              <p className="flex justify-between">
+                <span className="text-gray-500">Ghi chú</span>{" "}
+                <span>{selectedTransaction.note || "Không có"}</span>
+              </p>
+            </div>
+
+            {/* Nút Sửa - Xóa */}
+            <div className="flex justify-around border-t pt-2 mt-2">
+              <button className="text-blue-500 hover:text-blue-700"  onClick={() => handleEditTransaction(selectedTransaction.id)}>Sửa</button>
+              <button className="text-red-500 hover:text-red-700" onClick={()=>handleDeleteTransaction(selectedTransaction.id)}>Xóa</button>
+            </div>
+
+            {/* Nút Đóng */}
+            <button
+              className="absolute top-1 right-1 text-gray-500 hover:text-gray-700"
+              onClick={handleCloseModalDetailTransaction}
+            >
+              <CircleX />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
