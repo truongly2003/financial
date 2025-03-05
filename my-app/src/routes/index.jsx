@@ -16,6 +16,7 @@ import Goal from "@/pages/client/Goal";
 // authentication
 import Login from "@client/Authentication/Login";
 import SignUp from "@client/Authentication/SignUp";
+import Profile from "@/pages/client/Profile";
 
 const publicRoutes = [
   // client
@@ -33,5 +34,10 @@ const publicRoutes = [
 
   { path: routes.Login, component: Login, layout: null },
   { path: routes.SignUp, component: SignUp, layout: null },
+
+  // settings 
+  { path: routes.Profile, component: Profile, layout: DefaultLayout },
+
+
 ];
 export default publicRoutes;

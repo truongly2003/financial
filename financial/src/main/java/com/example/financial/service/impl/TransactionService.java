@@ -16,35 +16,58 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TransactionService  implements ITransactionService {
-    private  final TransactionRepository transactionRepository;
+public class TransactionService implements ITransactionService {
+    private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
     private final CategoryRepository categoryRepository;
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
-    @Override
-    public List<TransactionResponse> getAllTransactionByUserId(Integer id) {
-        List<Transaction> transactions=transactionRepository.getTransactionsByUserId(id);
-        return transactions.stream().map(transactionMapper::toTransactionResponse).toList();
-    }
 
     @Override
+    public List<TransactionResponse> getAllTransactionByUserIdAndPeriod(Integer userId, String filterType) {
+        LocalDate startDate;
+        LocalDate endDate = LocalDate.now();
+        switch (filterType) {
+            case "day":
+                startDate = endDate;
+                break;
+            case "week":
+                startDate = endDate.minusDays(endDate.getDayOfWeek().getValue() - 1);
+                break;
+            case "month":
+                startDate = endDate.withDayOfMonth(1);
+                break;
+            case "year":
+                startDate = endDate.withDayOfYear(1);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid filter type");
+        }
+        List<Transaction> transactions = transactionRepository.getTransactionsByUserIdAndPeriod(userId,startDate,endDate);
+        return transactions.stream().map(transactionMapper::toTransactionResponse).toList();
+    }
+    public List<TransactionResponse> getTransactionsByUserIdAndFilterRange(Integer userId, LocalDate startDate, LocalDate endDate) {
+        List<Transaction> transactions = transactionRepository.getTransactionsByUserIdAndPeriod(userId, startDate, endDate);
+        return transactions.stream().map(transactionMapper::toTransactionResponse).toList();
+    }
+    @Override
     public TransactionResponse getTransactionById(Integer id) {
-        Transaction transaction=transactionRepository.getTransactionById(id);
+        Transaction transaction = transactionRepository.getTransactionById(id);
         return transactionMapper.toTransactionResponse(transaction);
     }
 
     @Override
     public boolean addTransaction(TransactionRequest request) {
-        Category category=categoryRepository.findById(request.getCategoryId()).orElse(null);
-        Wallet wallet=walletRepository.findById(request.getWalletId()).orElse(null);
-        User user=userRepository.findById(request.getUserId()).orElse(null);
-        Transaction transaction=transactionMapper.toTransaction(request);
+        Category category = categoryRepository.findById(request.getCategoryId()).orElse(null);
+        Wallet wallet = walletRepository.findById(request.getWalletId()).orElse(null);
+        User user = userRepository.findById(request.getUserId()).orElse(null);
+        Transaction transaction = transactionMapper.toTransaction(request);
         transaction.setCategory(category);
         transaction.setWallet(wallet);
         transaction.setUser(user);
@@ -69,7 +92,7 @@ public class TransactionService  implements ITransactionService {
 
     @Override
     public boolean deleteTransaction(Integer transactionId) {
-        if(transactionRepository.existsById(transactionId)) {
+        if (transactionRepository.existsById(transactionId)) {
             transactionRepository.deleteById(transactionId);
             return true;
         }

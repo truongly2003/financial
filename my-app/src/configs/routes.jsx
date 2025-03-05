@@ -12,6 +12,10 @@ const routes={
     Goal: '/goal',
     Login: '/login',
     SignUp: "/signup",
+
+    // settings
+    Profile:'/profile',
+
 }
 export default routes
 

@@ -12,7 +12,7 @@ function TransactionForm({ initialTransaction }) {
     userId: 1,
     amount: "",
     description: "",
-    transactionDate: "2025-03-01",
+    transactionDate: new Date().toISOString().split("T")[0],
     categoryId: "",
     walletId: 1,
     paymentMethod: "",

@@ -4,10 +4,12 @@ import com.example.financial.dto.request.TransactionRequest;
 import com.example.financial.dto.response.ApiResponse;
 import com.example.financial.dto.response.TransactionResponse;
 import com.example.financial.service.ITransactionService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,13 +22,24 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    //    get list transaction
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactionByUser(@PathVariable Integer id) {
-        List<TransactionResponse> transactionResponses = transactionService.getAllTransactionByUserId(id);
+    //    get transaction by userId and filter time distance
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactionByUserIdAnd(
+            @RequestParam Integer userId,
+            @RequestParam String filterType) {
+        List<TransactionResponse> transactionResponses = transactionService.getAllTransactionByUserIdAndPeriod(userId,filterType);
         return ResponseEntity.ok(new ApiResponse<>(200, "lấy danh sách giao dịch thành công", transactionResponses));
     }
+    // API lọc theo khoảng thời gian cụ thể
+    @GetMapping("/filter-range")
+    public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactionsByCustomRange(
+            @RequestParam Integer userId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
+        List<TransactionResponse> transactions = transactionService.getTransactionsByUserIdAndFilterRange(userId, startDate, endDate);
+        return ResponseEntity.ok(new ApiResponse<>(200,"lấy danh sách giao dịch thành công", transactions));
+    }
     // get transaction by id
 //    @GetMapping()
 //    public ResponseEntity<TransactionResponse> getTransactionById(@RequestParam Integer transactionId) {
@@ -42,7 +55,7 @@ public class TransactionController {
         try {
             boolean create = transactionService.addTransaction(request);
             if (create) {
-                return ResponseEntity.ok(new ApiResponse<>(201, "Thêm giao dịch thành công bại", true));
+                return ResponseEntity.ok(new ApiResponse<>(201, "Thêm giao dịch thành công", true));
             } else {
                 return ResponseEntity.ok(new ApiResponse<>(201, "Thêm giao dịch thất bại", false));
             }

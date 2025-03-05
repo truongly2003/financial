@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Plus, CircleX } from "lucide-react";
+import { Plus, CircleX } from "lucide-react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import ICONS from "@/components/Icons";
-import { deleteTransaction } from "@/services/TransactionService";
+import {
+  deleteTransaction,
+  getAllTransactionByUserIdAndPeriod,
+  getAllTransactionsByUserIdAndFilterRange,
+} from "@/services/TransactionService";
+import { Input } from "@/components/ui/input";
+
 // import { object } from "prop-types";
 const balanceCards = [
   { amount: "96,800,000", label: "Số dư", color: "bg-red-400" },
@@ -14,10 +19,15 @@ const balanceCards = [
 ];
 function Home() {
   const [transaction, setTransactions] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("tuần");
   const [isModalDetailTransaction, setIsModalDetailTransaction] =
     useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [filter, setFilter] = useState("day");
+
+  //
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const userId = 1;
   const navigate = useNavigate();
   const handleEditTransaction = (id) => {
     navigate(`/transaction/${id}`);
@@ -25,24 +35,52 @@ function Home() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/transaction/1"
-        );
-        setTransactions(response.data.data);
+        let response;
+        if (startDate && endDate) {
+          response = await getAllTransactionsByUserIdAndFilterRange(
+            userId,
+            startDate,
+            endDate
+          );
+        } else {
+          response = await getAllTransactionByUserIdAndPeriod(userId, filter);
+        }
+
+        setTransactions(response.data);
       } catch (error) {
         console.error("Error fetching transactions:", error);
       }
     };
 
     fetchTransactions();
-  }, []);
+  }, [filter, startDate, endDate]);
 
   const groupedTransactions = transaction.reduce((acc, item) => {
-    const dateKey = item.transactionDate;
+    let dateKey;
+
+    if (filter === "day") {
+      dateKey = new Date(item.transactionDate).toLocaleDateString("vi-VN");
+    } else if (filter === "week") {
+      const date = new Date(item.transactionDate);
+      const weekNumber = Math.ceil(date.getDate() / 7);
+      dateKey = `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-Tuần ${weekNumber}`;
+    } else if (filter === "month") {
+      const date = new Date(item.transactionDate);
+      dateKey = `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}`; // YYYY-MM
+    } else if (filter === "year") {
+      dateKey = new Date(item.transactionDate).getFullYear().toString(); // YYYY
+    }
+
     if (!acc[dateKey]) {
       acc[dateKey] = { transactions: [], totalExpense: 0, totalIncome: 0 };
     }
+
     acc[dateKey].transactions.push(item);
+
     if (item.transactionType === "expense") {
       acc[dateKey].totalExpense += item.amount;
     } else if (item.transactionType === "income") {
@@ -51,6 +89,7 @@ function Home() {
 
     return acc;
   }, {});
+
   const handleDetailTransaction = (item) => {
     setSelectedTransaction(item);
     setIsModalDetailTransaction(true);
@@ -59,14 +98,14 @@ function Home() {
     setIsModalDetailTransaction(false);
     setSelectedTransaction(null);
   };
-  const handleDeleteTransaction=async (id)=>{
+  const handleDeleteTransaction = async (id) => {
     try {
-      const response=await deleteTransaction(id)
-      alert(response)
+      const response = await deleteTransaction(id);
+      alert(response);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   return (
     <div className="min-h-screen bg-gray-100 ">
       <div className="rounded-lg">
@@ -88,31 +127,43 @@ function Home() {
 
       {/* filter */}
       <div className="bg-white shadow-md rounded-lg mx-4 mt-4 p-4">
-        <div className="flex justify-between items-center border-b pb-2">
-          {["ngày", "tuần", "tháng", "năm", "khoảng thời gian"].map(
-            (filter) => (
-              <button
-                key={filter}
-                className={`text-sm font-medium ${
-                  activeFilter === filter
-                    ? "text-green-600 border-b-2 border-green-600"
-                    : "text-gray-500"
-                } px-2`}
-                onClick={() => setActiveFilter(filter)}
-              >
-                {filter.charAt(0).toUpperCase() + filter.slice(1)}
-              </button>
-            )
-          )}
-        </div>
-        <div className="flex items-center justify-center mt-2 text-gray-700">
-          <button className="p-2 hover:bg-gray-200 rounded-full">
-            <ChevronLeft size={20} />
-          </button>
-          <p className="text-center mx-4">17 thg 2 - 23 thg 2</p>
-          <button className="p-2 hover:bg-gray-200 rounded-full">
-            <ChevronRight size={20} />
-          </button>
+        <Input placeholder="Tìm kiếm giao dịch..." />
+        <div className="mt-4">
+          <div className="flex flex-wrap gap-6 p-4 bg-gray-100 rounded-lg shadow-md">
+            <select
+              className="border border-gray-300 bg-white text-gray-700 py-2 px-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              value={filter}
+              onChange={(e) => {
+                setFilter(e.target.value);
+                setStartDate("");
+                setEndDate("");
+              }}
+            >
+              <option value="day">Ngày</option>
+              <option value="week">Tuần </option>
+              <option value="month">Tháng</option>
+              <option value="year">Năm</option>
+            </select>
+            <div className="flex gap-4 items-center">
+              <span className="whitespace-nowrap"> Khoảng thời gian:</span>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  setFilter("");
+                }}
+              />
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                  setFilter("");
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -201,7 +252,7 @@ function Home() {
             {/* Nội dung giao dịch */}
             <div className="p-4 text-gray-700">
               <p className="flex justify-between">
-                <span className="text-gray-500">Danh mục</span>
+                <span className="text-gray-700 font-medium">Danh mục</span>
                 <span>
                   {selectedTransaction.categoryType === "income"
                     ? "Thu nhập"
@@ -209,7 +260,7 @@ function Home() {
                 </span>
               </p>
               <p className="flex justify-between">
-                <span className="text-gray-500">Số tiền</span>
+                <span className="text-gray-700 font-medium">Số tiền</span>
                 <span
                   className={`font-bold ${
                     selectedTransaction.transactionType === "income"
@@ -223,19 +274,29 @@ function Home() {
               </p>
 
               <p className="flex justify-between">
-                <span className="text-gray-500">Ngày</span>{" "}
+                <span className="text-gray-700 font-medium">Ngày</span>{" "}
                 <span>{selectedTransaction.transactionDate}</span>
               </p>
               <p className="flex justify-between">
-                <span className="text-gray-500">Ghi chú</span>{" "}
+                <span className="text-gray-700 font-medium">Ghi chú</span>{" "}
                 <span>{selectedTransaction.description || "Không có"}</span>
               </p>
             </div>
 
             {/* Nút Sửa - Xóa */}
             <div className="flex justify-around border-t pt-2 mt-2">
-              <button className="text-blue-500 hover:text-blue-700"  onClick={() => handleEditTransaction(selectedTransaction.id)}>Sửa</button>
-              <button className="text-red-500 hover:text-red-700" onClick={()=>handleDeleteTransaction(selectedTransaction.id)}>Xóa</button>
+              <button
+                className="text-blue-500 hover:text-blue-700 font-medium"
+                onClick={() => handleEditTransaction(selectedTransaction.id)}
+              >
+                Sửa
+              </button>
+              <button
+                className="text-red-500 hover:text-red-700 font-medium"
+                onClick={() => handleDeleteTransaction(selectedTransaction.id)}
+              >
+                Xóa
+              </button>
             </div>
 
             {/* Nút Đóng */}

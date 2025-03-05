@@ -10,6 +10,7 @@ const titles = {
   "/transaction/:id": "Cập nhật giao dịch ",
   "/statistical": "Thống kê",
   "/catalog": "Danh mục",
+  "/profile": "Hồ sơ"
 };
 function DefaultLayout({ children }) {
   const location = useLocation();

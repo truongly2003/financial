@@ -1,6 +1,18 @@
-import { Book, Settings, User,LayoutDashboard,BadgeDollarSign,ChartNoAxesCombined,ChartBarStacked,Handshake,ChartPie,Goal,CloudHail   } from "lucide-react";
+import {
+  Book,
+  UserRound,
+  Settings,
+  User,
+  LayoutDashboard,
+  BadgeDollarSign,
+  ChartNoAxesCombined,
+  ChartBarStacked,
+  Handshake,
+  ChartPie,
+  Goal,
+  CloudHail,
+} from "lucide-react";
 import SidebarItem from "./SidebarItem";
-
 
 const Sidebar = () => {
   return (
@@ -15,25 +27,27 @@ const Sidebar = () => {
           <p className="text-xs text-gray-400">Personal</p>
         </div>
       </div>
-
       {/* Nhóm menu */}
-      <div className="text-xs text-gray-400 uppercase mb-2">Quản lý thu chi</div>
+      <div className="text-xs text-gray-400 uppercase mb-2">
+        Quản lý thu chi
+      </div>
       <SidebarItem icon={LayoutDashboard} label="Tổng quan">
         <SidebarItem icon={Handshake} label="Tổng thu & chi" to="/" />
-        <SidebarItem icon={ChartPie} label="Biểu đồ thống kê" to="/statistical"/>
-
+        <SidebarItem
+          icon={ChartPie}
+          label="Biểu đồ thống kê"
+          to="/statistical"
+        />
       </SidebarItem>
-
       <SidebarItem icon={BadgeDollarSign} label="Giao dịch" to="/transaction" />
-      <SidebarItem icon={ChartBarStacked} label="Danh mục" to="/catalog"/>
-      <SidebarItem icon={Goal} label="Mục tiêu" to="/goal"/>
-      <SidebarItem icon={CloudHail} label="Nhắc nợ" to="/debt"/>
-
+      <SidebarItem icon={ChartBarStacked} label="Danh mục" to="/catalog" />
+      <SidebarItem icon={Goal} label="Mục tiêu" to="/goal" />
+      <SidebarItem icon={CloudHail} label="Nhắc nợ" to="/debt" />
       <SidebarItem icon={Book} label="Ngân sách" to="/budget" />
       <SidebarItem icon={ChartNoAxesCombined} label="Báo cáo" to="/report" />
-      <SidebarItem icon={Settings} label="Cài đặt" to="/option"/>
-
-
+      <SidebarItem icon={Settings} label="Cài đặt"  >
+        <SidebarItem icon={UserRound} label="Hồ sơ" to="/profile"  />
+      </SidebarItem>
       {/* User Info */}
       <div className="absolute bottom-4 left-4 flex items-center gap-2">
         <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
