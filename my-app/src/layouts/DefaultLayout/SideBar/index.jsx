@@ -4,13 +4,13 @@ import {
   Settings,
   User,
   LayoutDashboard,
-  BadgeDollarSign,
   ChartNoAxesCombined,
   ChartBarStacked,
   Handshake,
   ChartPie,
   Goal,
   CloudHail,
+  WalletMinimal
 } from "lucide-react";
 import SidebarItem from "./SidebarItem";
 
@@ -31,15 +31,15 @@ const Sidebar = () => {
       <div className="text-xs text-gray-400 uppercase mb-2">
         Quản lý thu chi
       </div>
+      <SidebarItem icon={Handshake} label="Giao dịch" to="/" />
       <SidebarItem icon={LayoutDashboard} label="Tổng quan">
-        <SidebarItem icon={Handshake} label="Tổng thu & chi" to="/" />
         <SidebarItem
           icon={ChartPie}
           label="Biểu đồ thống kê"
           to="/statistical"
         />
       </SidebarItem>
-      <SidebarItem icon={BadgeDollarSign} label="Giao dịch" to="/transaction" />
+  
       <SidebarItem icon={ChartBarStacked} label="Danh mục" to="/catalog" />
       <SidebarItem icon={Goal} label="Mục tiêu" to="/goal" />
       <SidebarItem icon={CloudHail} label="Nhắc nợ" to="/debt" />
@@ -47,6 +47,7 @@ const Sidebar = () => {
       <SidebarItem icon={ChartNoAxesCombined} label="Báo cáo" to="/report" />
       <SidebarItem icon={Settings} label="Cài đặt"  >
         <SidebarItem icon={UserRound} label="Hồ sơ" to="/profile"  />
+        <SidebarItem icon={WalletMinimal} label="Ví" to="/wallet"  />
       </SidebarItem>
       {/* User Info */}
       <div className="absolute bottom-4 left-4 flex items-center gap-2">

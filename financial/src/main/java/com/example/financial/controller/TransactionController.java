@@ -70,9 +70,9 @@ public class TransactionController {
         try {
             boolean create = transactionService.updateTransaction(transactionId, request);
             if (create) {
-                return ResponseEntity.ok(new ApiResponse<>(201, "Cập nhật giao dịch thành công bại", true));
+                return ResponseEntity.ok(new ApiResponse<>(201, "Cập nhật giao dịch thành công ", true));
             } else {
-                return ResponseEntity.ok(new ApiResponse<>(201, "Cập nhật giao dịch thành công bại", true));
+                return ResponseEntity.ok(new ApiResponse<>(201, "Cập nhật giao dịch thành công ", true));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -85,10 +85,10 @@ public class TransactionController {
         try {
             boolean delete = transactionService.deleteTransaction(transactionId);
             if (delete) {
-                return ResponseEntity.ok(new ApiResponse<>(201, "Xóa giao dịch thành công bại", true));
+                return ResponseEntity.ok(new ApiResponse<>(201, "Xóa giao dịch thành công ", true));
 
             } else {
-                return ResponseEntity.ok(new ApiResponse<>(201, "Xóa giao dịch thành công bại", true));
+                return ResponseEntity.ok(new ApiResponse<>(201, "Xóa giao dịch thành công ", true));
 
             }
         } catch (Exception e) {

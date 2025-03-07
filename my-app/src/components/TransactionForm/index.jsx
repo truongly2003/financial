@@ -1,42 +1,55 @@
-import { useEffect, useState } from "react";
-
 import PropTypes from "prop-types";
-import CategorySelector from "@/components/CategorySelector";
+import {  useState } from "react";
 import {
   addTransaction,
+  deleteTransaction,
   updateTransaction,
 } from "@/services/TransactionService";
+import { CircleX } from "lucide-react";
+import CategoryDropdown from "../CategoryDropdown";
 
-function TransactionForm({ initialTransaction }) {
-  const [transaction, setTransactions] = useState({
-    userId: 1,
-    amount: "",
-    description: "",
-    transactionDate: new Date().toISOString().split("T")[0],
-    categoryId: "",
-    walletId: 1,
-    paymentMethod: "",
-    transactionStatus: "complete",
-  });
-  useEffect(() => {
-    if (initialTransaction) {
-      setTransactions(initialTransaction);
+
+export default function TransactionForm({
+  onClose,
+  initialTransaction,
+  onSuccess,
+}) {
+  const [transaction, setTransactions] = useState(
+    initialTransaction || {
+      userId: 1,
+      amount: "",
+      description: "",
+      transactionDate: new Date().toISOString().split("T")[0],
+      categoryId: "",
+      walletId: 1,
+      paymentMethod: "Card",
+      transactionStatus: "complete",
     }
-  }, [initialTransaction]);
+  );
+  
+  // const [selectedCategory, setSelectedCategory] = useState(null);
+  // useEffect(() => {
+  //   async function fetchCategory() {
+  //     if (initialTransaction?.categoryId) {
+  //       try {
+  //         const result = await getAllCategory(1); // Load danh mục
+  //         const foundCategory = result.data.find(
+  //           (cat) => cat.id === initialTransaction.categoryId
+  //         );
+  //         setSelectedCategory(foundCategory);
+  //       } catch (error) {
+  //         console.error("Lỗi khi lấy danh mục:", error);
+  //       }
+  //     }
+  //   }
+  //   fetchCategory();
+  // }, [initialTransaction]);
   const handleChangeTransaction = (e) => {
     setTransactions({
       ...transaction,
       [e.target.name]: e.target.value,
     });
   };
-
-  const handleSelectCategory = (category) => {
-    setTransactions({
-      ...transaction,
-      categoryId: category.id,
-    });
-  };
-
   const handleSubmit = async () => {
     try {
       let response;
@@ -46,52 +59,120 @@ function TransactionForm({ initialTransaction }) {
         response = await addTransaction(transaction);
       }
       alert(response.message);
+      onClose();
+      onSuccess();
     } catch (error) {
       console.log(error);
     }
   };
-
+  const handleDeleteTransaction = async () => {
+    if (!confirm("Bạn có chắc chắn xóa giao dịch này không")) return;
+    try {
+      const response = await deleteTransaction(transaction.id);
+      alert(response.message);
+      onClose();
+      onSuccess();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleSelectCategory =(category) => {
+    // console.log(category);
+    setTransactions({
+      ...transaction,
+      categoryId:category.id
+    })
+    // setSelectedCategory(category);
+  }
   return (
-    <div>
-      <div className="bg-white shadow-md rounded-lg mx-4 mt-4 p-4">
-        <CategorySelector
-          onSelectCategory={handleSelectCategory}
-          selectedCategoryId={Number(transaction.categoryId)}
-        />
-      </div>
-      {/* Nhập số tiền */}
-      <div className="bg-white shadow-md rounded-lg mx-4 mt-4 p-4">
-        <div className="text-center">
-          <input
-            type="number"
-            className="w-full mt-2 p-2 border rounded-lg text-center"
-            placeholder="Nhập số tiền"
-            name="amount"
-            value={transaction.amount}
-            onChange={handleChangeTransaction}
-          />
-          {/* Ô nhập ghi chú */}
-          <textarea
-            className="w-full mt-2 p-2 border rounded-lg text-center"
-            placeholder="Nhập ghi chú (không bắt buộc)"
-            name="description"
-            value={transaction.description}
-            onChange={handleChangeTransaction}
-          ></textarea>
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
+      <div className="bg-white p-4 rounded-lg shadow-lg w-[1200px] relative">
+        <div className="grid grid-cols-6 gap-4 mt-3 ">
+          {/* Loại */}
+          <div className="col-span-1 ">
+            <label className="text-sm text-gray-600">Danh mục</label>
+            <CategoryDropdown onSelectCategory={handleSelectCategory}     initialCategoryId={transaction.categoryId} />
+          </div>
 
+          {/* Ngày */}
+          <div className="col-span-1">
+            <label className="text-sm text-gray-600">Ngày</label>
+            <input
+              type="date"
+              className="border rounded p-2 w-full"
+              name="transactionDate"
+              value={transaction.transactionDate}
+              onChange={handleChangeTransaction}
+            />
+          </div>
+
+          {/* Số tiền */}
+          <div className="col-span-2">
+            <label className="text-sm text-gray-600">Số tiền</label>
+            <input
+              type="number"
+              className="border rounded p-2 w-full text-red-500"
+              name="amount"
+              value={transaction.amount}
+              onChange={handleChangeTransaction}
+            />
+          </div>
+          {/* Lưu ý */}
+          <div className="col-span-2">
+            <label className="text-sm text-gray-600 h-[100px]">
+              Lưu ý (tùy chọn)
+            </label>
+            <textarea
+              rows="5"
+              className="w-full border rounded"
+              placeholder="Nhập nội dung tại đây..."
+              name="description"
+              value={transaction.description}
+              onChange={handleChangeTransaction}
+            />
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-end mt-4 gap-2">
+          <button className="flex items-center bg-gray-200 p-2 rounded">
+            📷
+          </button>
           <button
-            className="w-full mt-4 bg-blue-500 text-white py-2 rounded-lg font-semibold"
+            className="bg-green-500 text-white px-4 py-2 rounded"
             onClick={handleSubmit}
           >
-            {transaction.id ? "Cập nhật giao dịch" : "Thêm giao dịch"}
+            {/* {transaction.id ? "Lưu thay đổi" : "Lưu"} */}
+            Lưu
+          </button>
+          {transaction.id && (
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded"
+              onClick={handleDeleteTransaction}
+            >
+              Xóa giao dịch
+            </button>
+          )}
+          <button
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+            onClick={onClose}
+          >
+            Hủy bỏ
+          </button>
+          <button
+            className="absolute top-1 right-1 text-gray-500 hover:text-gray-700"
+            onClick={onClose}
+          >
+            <CircleX />
           </button>
         </div>
-        {/* )} */}
       </div>
     </div>
   );
 }
+
 TransactionForm.propTypes = {
   initialTransaction: PropTypes.object,
+  onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
 };
-export default TransactionForm;

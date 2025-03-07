@@ -5,7 +5,7 @@ import { AlignJustify } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 const titles = {
-  "/": "Tổng quan",
+  "/": "Giao dịch",
   "/transaction": "Thêm giao dịch ",
   "/transaction/:id": "Cập nhật giao dịch ",
   "/statistical": "Thống kê",
@@ -17,10 +17,6 @@ function DefaultLayout({ children }) {
   const [title, setTitle] = useState("");
   useEffect(() => {
     let newTitle=titles[location.pathname] || "Không xác định"
-    if (/^\/transaction\/\d+$/.test(location.pathname)) {
-      newTitle = "Cập nhật giao dịch";
-    }
-    
     setTitle(newTitle);
   }, [location.pathname]);
   return (
