@@ -25,7 +25,6 @@ const publicRoutes = [
   { path: routes.Catalog, component: Catalog, layout: DefaultLayout },
   { path: routes.Option, component: Option, layout: DefaultLayout },
   { path: routes.Budget, component: Budget, layout: DefaultLayout },
- 
 
   { path: routes.Goal, component: Goal, layout: DefaultLayout },
   { path: routes.Debt, component: Debt, layout: DefaultLayout },
@@ -33,11 +32,8 @@ const publicRoutes = [
   { path: routes.Login, component: Login, layout: null },
   { path: routes.SignUp, component: SignUp, layout: null },
 
-  // settings 
+  // settings
   { path: routes.Profile, component: Profile, layout: DefaultLayout },
   { path: routes.Wallet, component: Wallet, layout: DefaultLayout },
-
-
-
 ];
 export default publicRoutes;

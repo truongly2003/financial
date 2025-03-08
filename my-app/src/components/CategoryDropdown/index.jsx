@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { ChevronDown } from "lucide-react";
 import { getAllCategory } from "@/services/CategoryService";
 import ICONS from "../Icons";
 export default function CategoryDropdown({
@@ -38,7 +39,7 @@ export default function CategoryDropdown({
       }
     }
     fetchCategories();
-  }, [userId]);
+  }, [userId,initialCategoryId]);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -59,17 +60,11 @@ export default function CategoryDropdown({
         className="w-full flex justify-between items-center px-4 py-2 border rounded-lg bg-white"
         onClick={toggleDropdown}
       >
-        {/* {selectedCategory ? (
-          <>
-            <span>{selectedCategory.categoryName}</span>
-          </>
-        ) : (
-          "Chọn danh mục ⬇"
-        )} */}
+       
         {selectedCategory ? (
           <span>{selectedCategory.categoryName}</span>
         ) : (
-          "Chọn danh mục ⬇"
+         <span className="flex items-center"> Chọn danh mục <ChevronDown /></span> 
         )}
       </button>
 

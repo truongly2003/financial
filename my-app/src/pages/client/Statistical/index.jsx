@@ -88,80 +88,83 @@ function Statistical() {
   }, [data]);
 
   return (
-    <div className="p-4">
-      {/* Thống kê tổng quan */}
-      <div className="bg-white text-white flex rounded-lg     shadow-md">
-        <div className="flex  gap-3 p-4">
-          {balanceCards.map((card, index) => (
-            <div
-              key={index}
-              className={`p-4 rounded-lg shadow-md text-white ${card.color}`}
-            >
-              <p className="text-sm">{card.label}</p>
-              <p className="text-xl font-bold">{card.amount}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex gap-6 border-b-2 p-4 mt-4 bg-white text-white rounded-lg h-[80px]     shadow-md">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            className={`text-gray-500 relative px-2 pb-1 ${
-              activeTab === tab ? "text-green-600 font-semibold" : ""
-            }`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-            {activeTab === tab && (
-              <div className="absolute bottom-0 left-0 w-full h-[2px] bg-green-600"></div>
-            )}
-          </button>
-        ))}
-
-        {/* Chọn khoảng thời gian */}
-        {activeTab === "Khoảng thời gian" && (
-          <div className="">
-            <label>Từ ngày: </label>
-            <input
-              type="date"
-              value={customRange.from}
-              onChange={(e) =>
-                setCustomRange({ ...customRange, from: e.target.value })
-              }
-              className="border p-2 rounded text-black"
-            />
-            <label className="ml-4">Đến ngày: </label>
-            <input
-              type="date"
-              value={customRange.to}
-              onChange={(e) =>
-                setCustomRange({ ...customRange, to: e.target.value })
-              }
-              className="border p-2 rounded text-black"
-            />
+    // min-h-screen
+    <div className="min-h-screen">
+      <div className="mt-4 ">
+        {/* Thống kê tổng quan */}
+        <div className="bg-white text-white flex rounded-lg     ">
+          <div className="flex  gap-3 p-4">
+            {balanceCards.map((card, index) => (
+              <div
+                key={index}
+                className={`p-4 rounded-lg shadow-md text-white ${card.color}`}
+              >
+                <p className="text-sm">{card.label}</p>
+                <p className="text-xl font-bold">{card.amount}</p>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+        <div className="flex gap-6 border-b-2  mt-4 bg-white text-white rounded-lg h-[80px]     ">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`text-gray-500 relative px-2 pb-1 ${
+                activeTab === tab ? "text-green-600 font-semibold" : ""
+              }`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+              {activeTab === tab && (
+                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-green-600"></div>
+              )}
+            </button>
+          ))}
 
-      {/* end */}
-      <div className="grid grid-cols-2 gap-4 ">
-        <div className="col-span-2 bg-white shadow-md p-4 rounded-lg">
-          <h3 className="text-lg font-semibold ">
-            So sánh Thu nhập & Chi tiêu
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <YAxis domain={[0, maxValue]} />
-              <XAxis dataKey="day" />
+          {/* Chọn khoảng thời gian */}
+          {activeTab === "Khoảng thời gian" && (
+            <div className="">
+              <label>Từ ngày: </label>
+              <input
+                type="date"
+                value={customRange.from}
+                onChange={(e) =>
+                  setCustomRange({ ...customRange, from: e.target.value })
+                }
+                className="border p-2 rounded text-black"
+              />
+              <label className="ml-4">Đến ngày: </label>
+              <input
+                type="date"
+                value={customRange.to}
+                onChange={(e) =>
+                  setCustomRange({ ...customRange, to: e.target.value })
+                }
+                className="border p-2 rounded text-black"
+              />
+            </div>
+          )}
+        </div>
 
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="income" fill="#4CAF50" name="Thu nhập" />
-              <Bar dataKey="expense" fill="#FF5733" name="Chi tiêu" />
-            </BarChart>
-          </ResponsiveContainer>
+        {/* end */}
+        <div className="grid grid-cols-2 gap-4 ">
+          <div className="col-span-2 bg-white shadow-md p-4 rounded-lg">
+            <h3 className="text-lg font-semibold ">
+              So sánh Thu nhập & Chi tiêu
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <YAxis domain={[0, maxValue]} />
+                <XAxis dataKey="day" />
+
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="income" fill="#4CAF50" name="Thu nhập" />
+                <Bar dataKey="expense" fill="#FF5733" name="Chi tiêu" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>

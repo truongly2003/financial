@@ -37,8 +37,9 @@ function Goal() {
     alert("detail goal");
   };
   return (
-    <div className="">
-      <div className="bg-white shadow-md rounded-lg mx-4 mt-4 p-4">
+    <div className="min-h-screen  ">
+         <div className=" mt-4">
+      <div className="bg-white shadow-md rounded-lg p-2">
         <div className="flex justify-between">
           <div className="flex flex-nowrap">
             <div className="flex-1 h-16 ">
@@ -53,7 +54,7 @@ function Goal() {
           </div>
         </div>
       </div>
-      <div className="bg-white shadow-md rounded-lg mx-4 mt-4 p-4">
+      <div className="bg-white shadow-md rounded-lg mt-4 p-4">
         <table className="w-full  text-dark">
           <thead>
             <tr className=" text-gray-800">
@@ -118,6 +119,8 @@ function Goal() {
         </table>
       </div>
     </div>
+    </div>
+ 
   );
 }
 

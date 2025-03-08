@@ -1,44 +1,18 @@
 import PropTypes from "prop-types";
 import Header from "./Header";
-import Sidebar from "./SideBar";
+// import Sidebar from "./SideBar";
 import { AlignJustify } from "lucide-react";
-import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-const titles = {
-  "/": "Giao dịch",
-  "/transaction": "Thêm giao dịch ",
-  "/transaction/:id": "Cập nhật giao dịch ",
-  "/statistical": "Thống kê",
-  "/catalog": "Danh mục",
-  "/profile": "Hồ sơ"
-};
 function DefaultLayout({ children }) {
-  const location = useLocation();
-  const [title, setTitle] = useState("");
-  useEffect(() => {
-    let newTitle=titles[location.pathname] || "Không xác định"
-    setTitle(newTitle);
-  }, [location.pathname]);
   return (
-    <div className="flex h-screen">
-      <div className="w-64 h-screen fixed left-0 top-0">
-        <Sidebar />
+    <div className=" bg-gray-200">
+      {/* Header cố định trên cùng */}
+      <div className="sticky top-0 z-50 bg-white ">
+        <Header icon={AlignJustify} />
       </div>
-      <div className="ml-64 flex-1 flex flex-col h-screen overflow-auto">
-        {/* Header cố định trên cùng */}
-        <div className="sticky top-0 z-50 bg-white shadow-md">
-          <Header icon={AlignJustify} />
-        </div>
 
-        {/* Nội dung bên dưới Header */}
-        <div className="flex flex-col items-center gap-1 bg-light p-1">
-          <div className="w-full h-[30px]  text-gray-900">
-            <span className="mx-4">{title}</span>
-          </div>
-          <div className="w-full min-h-[800px] bg-gray-200 rounded-lg shadow-lg shadow-gray-700">
-            {children}
-          </div>
-        </div>
+      {/* Nội dung bên dưới Header */}
+      <div className="container mx-auto px-4 md:max-w-3xl lg:max-w-6xl">
+        <div className="    ">{children}</div>
       </div>
     </div>
   );

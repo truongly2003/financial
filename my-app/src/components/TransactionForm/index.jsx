@@ -27,23 +27,7 @@ export default function TransactionForm({
     }
   );
   
-  // const [selectedCategory, setSelectedCategory] = useState(null);
-  // useEffect(() => {
-  //   async function fetchCategory() {
-  //     if (initialTransaction?.categoryId) {
-  //       try {
-  //         const result = await getAllCategory(1); // Load danh mục
-  //         const foundCategory = result.data.find(
-  //           (cat) => cat.id === initialTransaction.categoryId
-  //         );
-  //         setSelectedCategory(foundCategory);
-  //       } catch (error) {
-  //         console.error("Lỗi khi lấy danh mục:", error);
-  //       }
-  //     }
-  //   }
-  //   fetchCategory();
-  // }, [initialTransaction]);
+
   const handleChangeTransaction = (e) => {
     setTransactions({
       ...transaction,
@@ -77,12 +61,10 @@ export default function TransactionForm({
     }
   };
   const handleSelectCategory =(category) => {
-    // console.log(category);
     setTransactions({
       ...transaction,
       categoryId:category.id
     })
-    // setSelectedCategory(category);
   }
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">

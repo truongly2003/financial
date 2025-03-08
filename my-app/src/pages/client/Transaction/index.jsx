@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 // import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { PlusCircle, RotateCcw } from "lucide-react";
 import ICONS from "@/components/Icons";
 import {
   getAllTransactionByUserIdAndPeriod,
@@ -35,15 +34,15 @@ function Transaction() {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  }, [filter, startDate, endDate]); 
+  }, [filter, startDate, endDate]);
 
   useEffect(() => {
     fetchTransactions();
-  }, [fetchTransactions]); 
+  }, [fetchTransactions]);
+  const listCategories = transaction.map((item) => item.categoryName);
 
   const groupedTransactions = transaction.reduce((acc, item) => {
     let dateKey;
-
     if (filter === "day") {
       dateKey = new Date(item.transactionDate).toLocaleDateString("vi-VN");
     } else if (filter === "week") {
@@ -80,6 +79,10 @@ function Transaction() {
     (acc, [date, data]) => {
       const searchData = data.transactions.filter(
         (item) =>
+          //
+          item.categoryName.includes(searchItem) ||
+          item.categoryType.includes(searchItem) ||
+          //
           item.categoryName.toLowerCase().includes(searchItem.toLowerCase()) ||
           (searchItem.toLowerCase() === "thu nhập" &&
             item.categoryType === "income") ||
@@ -97,9 +100,19 @@ function Transaction() {
   const transactionsToRender =
     searchItem.trim() !== "" ? searchTransactions : groupedTransactions;
   return (
-    <div className="min-h-screen  ">
+    <div className="min-h-screen mt-4 ">
       {/* filter start */}
-      <div className="bg-white shadow-md rounded-lg mt-4 mx-4  p-4">
+      <button
+        className="w-[180px] flex items-center gap-2 px-4 py-2 text-white bg-emerald-500 rounded-lg shadow hover:bg-emerald-600 transition"
+        onClick={() => {
+          setShowFormTransaction(true);
+          setEditingTransaction(null);
+        }}
+      >
+        <PlusCircle size={20} />
+        <span> Thêm giao dịch</span>
+      </button>
+      <div className="bg-white shadow-md rounded-lg mt-2  p-4">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold">Lọc</h2>
         </div>
@@ -107,25 +120,35 @@ function Transaction() {
           {/* Loại */}
           <div className="col-span-1 ">
             <label className="text-sm text-gray-600">Loại</label>
-            <select className=" border rounded p-2 w-full">
-              <option>Chi tiêu</option>
-              <option>Thu nhập</option>
+            <select
+              className=" border rounded p-2 w-full "
+              value={searchItem}
+              onChange={(e) => setSearchItem(e.target.value)}
+            >
+              <option value="expense">Chi tiêu</option>
+              <option value="income">Thu nhập</option>
             </select>
           </div>
           {/* Danh mục */}
           <div className="col-span-1 ">
             <label className="text-sm text-gray-600">Danh mục</label>
-            <select className=" border rounded p-2 w-full">
-              <option>Ăn uống</option>
-              <option>Chi tiêu</option>
+            <select
+              className=" border rounded p-2 w-full"
+              value={searchItem}
+              onChange={(e) => setSearchItem(e.target.value)}
+            >
+              {[...new Set(listCategories)].map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
             </select>
           </div>
           <div className="col-span-1">
             <label className="text-sm text-gray-600">Tìm kiếm</label>
             <input
               placeholder="Tìm kiếm giao dịch..."
-              className="outline-none border rounded p-2"
-              // type="red"
+              className="outline-none border rounded p-2 w-full"
               value={searchItem}
               onChange={(e) => setSearchItem(e.target.value)}
             />
@@ -140,6 +163,7 @@ function Transaction() {
                 setFilter(e.target.value);
                 setStartDate("");
                 setEndDate("");
+                setSearchItem("");
               }}
             >
               <option value="day">Ngày</option>
@@ -153,7 +177,7 @@ function Transaction() {
             <label className="text-sm text-gray-600 ">
               Theo khoảng thời gian
             </label>
-            <div className="flex gap-4">
+            <div className="flex gap-4 items-center">
               <Input
                 type="date"
                 value={startDate}
@@ -170,6 +194,9 @@ function Transaction() {
                   setFilter("");
                 }}
               />
+              <div>
+                <RotateCcw />
+              </div>
             </div>
           </div>
         </div>
@@ -177,7 +204,7 @@ function Transaction() {
       {/* end filter */}
 
       {/* Danh sách giao dịch */}
-      <div className="mx-4 mt-4">
+      <div className=" mt-4">
         {Object.entries(transactionsToRender).map(([date, data], index) => (
           <div key={index} className="mb-4">
             {/* Hiển thị ngày, tổng chi tiêu và tổng thu nhập */}
@@ -239,16 +266,7 @@ function Transaction() {
       </div>
 
       {/* add transaction */}
-      <Link
-        className="fixed flex bottom-16 right-16 bg-yellow-400 text-black p-4 rounded-full shadow-lg hover:bg-yellow-500"
-        onClick={() => {
-          setShowFormTransaction(true);
-          setEditingTransaction(null);
-        }}
-      >
-        Thêm mới
-        <Plus size={24} />
-      </Link>
+
       {showFormTransaction && (
         <TransactionForm
           onClose={() => setShowFormTransaction(false)}
