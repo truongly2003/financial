@@ -1,13 +1,8 @@
 package com.example.financial.service.impl;
-
 import com.example.financial.service.IBaseService;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-
 public class BaseService <T,ID> implements IBaseService<T,ID> {
     protected final JpaRepository<T,ID> repository;
     public BaseService(JpaRepository<T,ID> repository) {

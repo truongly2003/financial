@@ -9,7 +9,7 @@ import com.example.financial.repository.CategoryRepository;
 import com.example.financial.repository.UserRepository;
 import com.example.financial.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,32 +17,32 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService  implements ICategoryService {
+public class CategoryService implements ICategoryService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final CategoryMapper categoryMapper;
 
     @Override
     public List<CategoryResponse> getAllCategoriesByUserId(int userId) {
-        List<Category> categories=categoryRepository.getCategoryByUserId(userId);
+        List<Category> categories = categoryRepository.getCategoryByUserId(userId);
         return categories.stream().map(categoryMapper::toCategoryResponse).toList();
     }
 
     @Override
     public boolean addCategory(CategoryRequest request) {
-        User user=userRepository.findById(request.getUserId()).orElse(null);
-        Category category=categoryMapper.toCategory(request);
+        User user = userRepository.findById(request.getUserId()).orElse(null);
+        Category category = categoryMapper.toCategory(request);
         category.setUser(user);
         categoryRepository.save(category);
         return true;
     }
 
     @Override
-    public boolean updateCategory(Integer categoryId,CategoryRequest request) {
-        Optional<Category> optionalCategory=categoryRepository.findById(categoryId);
-        if(optionalCategory.isPresent()){
-            Category category=optionalCategory.get();
-            User user=userRepository.findById(request.getUserId()).orElse(null);
+    public boolean updateCategory(Integer categoryId, CategoryRequest request) {
+        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
+        if (optionalCategory.isPresent()) {
+            Category category = optionalCategory.get();
+            User user = userRepository.findById(request.getUserId()).orElse(null);
             category.setUser(user);
             category.setCategoryName(request.getCategoryName());
             category.setCategoryType(request.getCategoryType());
@@ -56,7 +56,7 @@ public class CategoryService  implements ICategoryService {
 
     @Override
     public boolean deleteCategory(Integer categoryId) {
-        if(categoryRepository.findById(categoryId).isPresent()){
+        if (categoryRepository.findById(categoryId).isPresent()) {
             categoryRepository.deleteById(categoryId);
             return true;
         }

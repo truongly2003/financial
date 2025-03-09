@@ -22,15 +22,15 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    //    get transaction by userId and filter time distance
+
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactionByUserIdAnd(
             @RequestParam Integer userId,
             @RequestParam String filterType) {
-        List<TransactionResponse> transactionResponses = transactionService.getAllTransactionByUserIdAndPeriod(userId,filterType);
+        List<TransactionResponse> transactionResponses = transactionService.getAllTransactionByUserIdAndPeriod(userId, filterType);
         return ResponseEntity.ok(new ApiResponse<>(200, "lấy danh sách giao dịch thành công", transactionResponses));
     }
-    // API lọc theo khoảng thời gian cụ thể
+
     @GetMapping("/filter-range")
     public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactionsByCustomRange(
             @RequestParam Integer userId,
@@ -38,13 +38,9 @@ public class TransactionController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
         List<TransactionResponse> transactions = transactionService.getTransactionsByUserIdAndFilterRange(userId, startDate, endDate);
-        return ResponseEntity.ok(new ApiResponse<>(200,"lấy danh sách giao dịch thành công", transactions));
+        return ResponseEntity.ok(new ApiResponse<>(200, "lấy danh sách giao dịch thành công", transactions));
     }
-    // get transaction by id
-//    @GetMapping()
-//    public ResponseEntity<TransactionResponse> getTransactionById(@RequestParam Integer transactionId) {
-//        return ResponseEntity.ok(transactionService.getTransactionById(transactionId));
-//    }
+
     @GetMapping()
     public ResponseEntity<ApiResponse<TransactionResponse>> getTransactionById(@RequestParam Integer transactionId) {
         return ResponseEntity.ok(new ApiResponse<>(200, "success", transactionService.getTransactionById(transactionId)));

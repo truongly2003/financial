@@ -1,0 +1,23 @@
+package com.example.financial.dto.response;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class GoalResponse {
+    Integer id;
+    Integer userId;
+    String goalName;
+    BigDecimal targetAmount;
+    BigDecimal currentAmount;
+    LocalDate deadline;
+    Integer walletId;
+    String status;
+}

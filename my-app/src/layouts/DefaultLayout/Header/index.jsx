@@ -32,14 +32,18 @@ export default function Header() {
         <NavLink to="/" className={getNavClass}>
           Giao dịch
         </NavLink>
-        <NavLink to="/statistical" className={getNavClass}>
-          Thống kê
-        </NavLink>
+
         <NavLink to="/budget" className={getNavClass}>
           Ngân sách
         </NavLink>
         <NavLink to="/goal" className={getNavClass}>
           Mục tiêu
+        </NavLink>
+        {/* <NavLink to="/remind" className={getNavClass}>
+          Nhắc nhở
+        </NavLink> */}
+        <NavLink to="/statistical" className={getNavClass}>
+          Thống kê
         </NavLink>
       </nav>
 

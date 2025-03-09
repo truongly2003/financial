@@ -55,9 +55,9 @@ function Transaction() {
       const date = new Date(item.transactionDate);
       dateKey = `${date.getFullYear()}-${(date.getMonth() + 1)
         .toString()
-        .padStart(2, "0")}`; // YYYY-MM
+        .padStart(2, "0")}`;
     } else if (filter === "year") {
-      dateKey = new Date(item.transactionDate).getFullYear().toString(); // YYYY
+      dateKey = new Date(item.transactionDate).getFullYear().toString();
     }
 
     if (!acc[dateKey]) {
@@ -79,10 +79,8 @@ function Transaction() {
     (acc, [date, data]) => {
       const searchData = data.transactions.filter(
         (item) =>
-          //
           item.categoryName.includes(searchItem) ||
           item.categoryType.includes(searchItem) ||
-          //
           item.categoryName.toLowerCase().includes(searchItem.toLowerCase()) ||
           (searchItem.toLowerCase() === "thu nhập" &&
             item.categoryType === "income") ||
@@ -202,67 +200,70 @@ function Transaction() {
         </div>
       </div>
       {/* end filter */}
-
+      {/* hover:bg-gray-200 */}
       {/* Danh sách giao dịch */}
-      <div className=" mt-4">
-        {Object.entries(transactionsToRender).map(([date, data], index) => (
-          <div key={index} className="mb-4">
-            {/* Hiển thị ngày, tổng chi tiêu và tổng thu nhập */}
-            <div className="flex justify-between items-center bg-white p-2 rounded-lg">
-              <p className="text-gray-600 font-bold">{date}</p>
-              <div className="text-sm text-gray-500 flex gap-4">
-                <span className="font-bold text-red-500">
-                  Chi tiêu: - {data.totalExpense.toLocaleString()} đ
-                </span>
-                <span className="font-bold text-green-500">
-                  Thu nhập: + {data.totalIncome.toLocaleString()} đ
-                </span>
+      <div className="  mt-4">
+        <div className="space-y-6 ">
+          {Object.entries(transactionsToRender).map(([date, data], index) => (
+            <div key={index} className="mb-6 bg-white rounded-lg">
+              {/* Hiển thị ngày, tổng chi tiêu và tổng thu nhập */}
+              <div className="flex justify-between items-center  p-2 border-b mb-4 border-gray-300">
+                <p className="text-gray-600 font-bold">{date}</p>
+                <div className="text-sm text-gray-500 flex gap-4">
+                  <span className="font-bold text-red-500">
+                    Chi tiêu: - {data.totalExpense.toLocaleString()} đ
+                  </span>
+                  <span className="font-bold text-green-500">
+                    Thu nhập: + {data.totalIncome.toLocaleString()} đ
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {data.transactions.map((item, idx) => {
-              const iconData = ICONS[item.icon] || {
-                icon: "?",
-                color: "bg-gray-400",
-              };
-              return (
-                <div
-                  key={idx}
-                  className="bg-white shadow-md rounded-lg p-4 flex justify-between items-center mt-2 mb-2 cursor-pointer"
-                  // onClick={() => handleDetailTransaction(item)}
-                  onClick={() => {
-                    setShowFormTransaction(true);
-                    setEditingTransaction(item);
-                  }}
-                >
-                  <div className="flex items-center gap-2 ">
+              {data.transactions.map((item, idx) => {
+                const iconData = ICONS[item.icon] || {
+                  icon: "?",
+                  color: "bg-gray-400",
+                };
+                return (
+                  <div key={idx} className="">
                     <div
-                      className={`w-10 h-10 flex items-center justify-center ${iconData.color} text-white rounded-full`}
+                      className="   p-4 flex justify-between items-center  cursor-pointer ml-2 mr-2   hover:bg-gray-200 hover:rounded-lg transition"
+                      // onClick={() => handleDetailTransaction(item)}
+                      onClick={() => {
+                        setShowFormTransaction(true);
+                        setEditingTransaction(item);
+                      }}
                     >
-                      {iconData.icon}
-                    </div>
-                    <div>
-                      <p className="text-gray-700 font-medium">
-                        {item.categoryName}
+                      <div className="flex items-center gap-2 ">
+                        <div
+                          className={`w-10 h-10 flex items-center justify-center ${iconData.color} rounded-full text-white `}
+                        >
+                          {iconData.icon}
+                        </div>
+                        <div>
+                          <p className="text-gray-600 font-medium">
+                            {item.categoryName}
+                          </p>
+                        </div>
+                      </div>
+                      <p
+                        className={`font-bold ${
+                          item.categoryType === "income"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {`${
+                          item.categoryType === "income" ? "+" : "-"
+                        }${item.amount.toLocaleString()} đ`}
                       </p>
                     </div>
                   </div>
-                  <p
-                    className={`font-bold ${
-                      item.categoryType === "income"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {`${
-                      item.categoryType === "income" ? "+" : "-"
-                    }${item.amount.toLocaleString()} đ`}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* add transaction */}

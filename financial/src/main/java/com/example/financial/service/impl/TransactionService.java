@@ -13,7 +13,6 @@ import com.example.financial.repository.UserRepository;
 import com.example.financial.repository.WalletRepository;
 import com.example.financial.service.ITransactionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -33,29 +32,22 @@ public class TransactionService implements ITransactionService {
     public List<TransactionResponse> getAllTransactionByUserIdAndPeriod(Integer userId, String filterType) {
         LocalDate startDate;
         LocalDate endDate = LocalDate.now();
-        switch (filterType) {
-            case "day":
-                startDate = endDate;
-                break;
-            case "week":
-                startDate = endDate.minusDays(endDate.getDayOfWeek().getValue() - 1);
-                break;
-            case "month":
-                startDate = endDate.withDayOfMonth(1);
-                break;
-            case "year":
-                startDate = endDate.withDayOfYear(1);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid filter type");
-        }
-        List<Transaction> transactions = transactionRepository.getTransactionsByUserIdAndPeriod(userId,startDate,endDate);
+        startDate = switch (filterType) {
+            case "day" -> endDate;
+            case "week" -> endDate.minusDays(endDate.getDayOfWeek().getValue() - 1);
+            case "month" -> endDate.withDayOfMonth(1);
+            case "year" -> endDate.withDayOfYear(1);
+            default -> throw new IllegalArgumentException("Invalid filter type");
+        };
+        List<Transaction> transactions = transactionRepository.getTransactionsByUserIdAndPeriod(userId, startDate, endDate);
         return transactions.stream().map(transactionMapper::toTransactionResponse).toList();
     }
+
     public List<TransactionResponse> getTransactionsByUserIdAndFilterRange(Integer userId, LocalDate startDate, LocalDate endDate) {
         List<Transaction> transactions = transactionRepository.getTransactionsByUserIdAndPeriod(userId, startDate, endDate);
         return transactions.stream().map(transactionMapper::toTransactionResponse).toList();
     }
+
     @Override
     public TransactionResponse getTransactionById(Integer id) {
         Transaction transaction = transactionRepository.getTransactionById(id);
