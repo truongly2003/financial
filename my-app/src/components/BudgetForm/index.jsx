@@ -102,7 +102,7 @@ export default function BudgetForm({ onClose, onSuccess, initialBudget }) {
               <input
                 type="date"
                 className="w-full p-2 border rounded-md"
-                defaultValue="2025-03-08"
+              
                 name="startDate"
                 value={budget.startDate}
                 onChange={handleChangeBudget}
@@ -113,7 +113,7 @@ export default function BudgetForm({ onClose, onSuccess, initialBudget }) {
               <input
                 type="date"
                 className="w-full p-2 border rounded-md"
-                defaultValue="2025-03-08"
+              
                 name="endDate"
                 value={budget.endDate}
                 onChange={handleChangeBudget}

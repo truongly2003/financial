@@ -61,3 +61,18 @@ export const deleteTransaction = async (id) => {
     console.error(error);
   }
 };
+
+// budget list
+export const getAllTransactionByUserIdAndBudgetId = async (
+  userId,
+  budgetId
+) => {
+  try {
+    const response = await httpRequest.get(
+      `/transaction/budget-list?userId=${userId}&budgetId=${budgetId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};

@@ -67,6 +67,8 @@ public class Transaction {
     @ColumnDefault("current_timestamp()")
     @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
+
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = Timestamp.valueOf(LocalDateTime.now());

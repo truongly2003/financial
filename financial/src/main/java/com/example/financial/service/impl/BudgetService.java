@@ -8,11 +8,13 @@ import com.example.financial.entity.User;
 import com.example.financial.mapper.BudgetMapper;
 import com.example.financial.repository.BudgetRepository;
 import com.example.financial.repository.CategoryRepository;
+import com.example.financial.repository.TransactionRepository;
 import com.example.financial.repository.UserRepository;
 import com.example.financial.service.IBudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,17 +25,50 @@ public class BudgetService implements IBudgetService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final BudgetMapper budgetMapper;
+    private final TransactionRepository transactionRepository;
 
     @Override
     public List<BudgetResponse> getAllBudgetByUserId(Integer userId) {
         List<Budget> budgets = budgetRepository.getBudgetsByUserId(userId);
-        return budgets.stream().map(budgetMapper::toBudgetResponse).toList();
+        return budgets.stream().map(budget -> {
+            BigDecimal totalSpent = transactionRepository.getTotalSpentByBudget(
+                    userId,
+                    budget.getCategory().getId(),
+                    "expense",
+                    budget.getStartDate(),
+                    budget.getEndDate()
+            );
+            BudgetResponse response = budgetMapper.toBudgetResponse(budget);
+            response.setTotalSpent(totalSpent);
+
+            Category category = categoryRepository.findById(budget.getCategory().getId()).orElse(null);
+            if (category != null) {
+                response.setCategoryName(category.getCategoryName());
+            }
+
+            return response;
+        }).toList();
     }
+
 
     @Override
     public BudgetResponse getBudgetById(Integer id) {
         Budget budget = budgetRepository.getBudgetById(id);
-        return budgetMapper.toBudgetResponse(budget);
+        BudgetResponse response = budgetMapper.toBudgetResponse(budget);
+        Category category = categoryRepository.findById(budget.getCategory().getId()).orElse(null);
+        if (category != null) {
+            response.setCategoryName(category.getCategoryName());
+        }
+        BigDecimal totalSpent = transactionRepository.getTotalSpentByBudget(
+                budget.getUser().getId(),
+                budget.getCategory().getId(),
+                "expense",
+                budget.getStartDate(),
+                budget.getEndDate()
+        );
+        response.setTotalSpent(totalSpent);
+        return response;
+
     }
 
     @Override
@@ -60,7 +95,7 @@ public class BudgetService implements IBudgetService {
             budget1.setStartDate(request.getStartDate());
             budget1.setEndDate(request.getEndDate());
             budget1.setAmountLimit(request.getAmountLimit());
-
+            budget1.setBudgetName(request.getBudgetName());
             budgetRepository.save(budget1);
             return true;
         }

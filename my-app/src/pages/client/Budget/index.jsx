@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { PlusCircle } from "lucide-react";
-import BudgetForm from "@/components/BudgetForm";
+// import BudgetForm from "@/components/BudgetForm";
 import { getAllBudgetByUserId } from "@/services/BudgetService";
+import { Link } from "react-router-dom";
+import ProgressBar from "@/components/ProgressBar";
 export default function Budget() {
   const [budgets, setBudgets] = useState([]);
-  const [showFormBudget, setShowFormBudget] = useState(false);
-  const [editingBudget, setEditingBudget] = useState(null);
+  // const [showFormBudget, setShowFormBudget] = useState(false);
+  // const [editingBudget, setEditingBudget] = useState(null);
 
   const fetchBudgets = async () => {
     try {
@@ -21,10 +23,10 @@ export default function Budget() {
   return (
     <div className="min-h-screen mt-4 ">
       <button
-        onClick={() => {
-          setShowFormBudget(true);
-          setEditingBudget(null);
-        }}
+        // onClick={() => {
+        //   setShowFormBudget(true);
+        //   setEditingBudget(null);
+        // }}
         className="w-[180px] flex items-center gap-2 px-4 py-2 text-white bg-emerald-500 rounded-lg shadow hover:bg-emerald-600"
       >
         <PlusCircle size={20} />
@@ -53,51 +55,87 @@ export default function Budget() {
           <div className="col-span-1"></div>
         </div>
       </div>
-      <div className="bg-white shadow-md rounded-lg p-4 mt-2">
-        <div className="space-y-4">
-          {budgets.map((budget) => (
-            <div
-              onClick={() => {
-                setShowFormBudget(true);
-                setEditingBudget(budget);
-              }}
-              key={budget.categoryId}
-              className="p-5 cursor-pointer bg-white shadow-lg rounded-xl border border-gray-200"
-            >
-              <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                {budget.budgetName}
-              </h2>
-              <p className="text-lg text-gray-700 mt-2">
-                💰{" "}
-                <span className="font-semibold">
-                  {budget.amountLimit.toLocaleString()} VND
-                </span>
-              </p>
-              <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
-                {budget.startDate} → {budget.endDate}
-              </p>
-              <p className="mt-2 flex items-center gap-2 text-sm">
-                <span className="text-gray-700 font-medium">Trạng thái:</span>
-                <span
-                  className={`px-2 py-1 rounded-full text-white ${
-                    budget.status === "active" ? "bg-green-500" : "bg-red-500"
-                  }`}
-                >
-                  {budget.status}
-                </span>
-              </p>
-            </div>
-          ))}
+      <div className="mt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+          {budgets.map((budget, index) => {
+            const progress = (budget.totalSpent / budget.amountLimit) * 100;
+            const progressColor =
+              budget.totalSpent >= budget.amountLimit
+                ? "bg-red-500"
+                : "bg-green-500";
+
+            return (
+              <Link
+                key={index}
+                className="bg-white shadow-md rounded-lg p-4 cursor-pointer"
+                to={`/budget/budget-detail/${budget.id}`}
+              >
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-gray-500 text-sm">{budget.walletName}</p>
+                    <p className="text-xl font-bold text-red-500">
+                      {budget.totalSpent.toLocaleString()} đ đã chi tiêu nhiều
+                      hơn
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Từ {budget.amountLimit.toLocaleString()} đ
+                    </p>
+                  </div>
+                  {/* progress */}
+                  <ProgressBar
+                    progress={progress}
+                    progressColor={progressColor} 
+                    startDate={budget.startDate} 
+                    endDate={budget.endDate} 
+                  />
+                  {/* <div className="progress">
+                    <div className="w-full bg-gray-200 rounded-full h-6 mt-2">
+                      <div
+                        className={`${progressColor} h-full rounded-full text-white text-xs flex items-center justify-center`}
+                        style={{ width: `${Math.min(progress, 100)}%` }}
+                      >
+                        {progress.toFixed(2)}%
+                      </div>
+                    </div>
+
+                    <div className="text-sm text-gray-500 flex justify-between mt-2">
+                      <span>{budget.startDate}</span>
+                      <span>{budget.endDate}</span>
+                    </div>
+                  </div> */}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
-      {showFormBudget && (
+      {/* {showFormBudget && (
         <BudgetForm
           onClose={() => setShowFormBudget(false)}
           initialBudget={editingBudget}
           onSuccess={fetchBudgets}
         />
-      )}
+      )} */}
     </div>
   );
 }
+
+// <div className="flex justify-between mb-4">
+// <div className="p-4 bg-white rounded-lg shadow border text-center">
+//   <p className="text-gray-600">Ngân sách ban đầu</p>
+//   <p className="text-green-500 font-bold">+34,00 €</p>
+// </div>
+// <div className="p-4 bg-white rounded-lg shadow border text-center">
+//   <p className="text-gray-600">Đã chi tiêu cho đến nay</p>
+//   <p className="text-red-500 font-bold">-4,333.00 EUR</p>
+// </div>
+// <div className="p-4 bg-white rounded-lg shadow border text-center">
+//   <p className="text-gray-600">Tiền chi tiêu thêm</p>
+//   <p className="text-red-500 font-bold">-4,299.00 €</p>
+// </div>
+// <div className="p-4 bg-white rounded-lg shadow border text-center">
+//   <p className="text-gray-600">Bạn có thể chi tiêu</p>
+//   <p className="text-gray-700 font-bold">0,00 EUR/Ngày</p>
+// </div>
+// </div>

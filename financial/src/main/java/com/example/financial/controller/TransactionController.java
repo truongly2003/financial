@@ -22,7 +22,6 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactionByUserIdAnd(
             @RequestParam Integer userId,
@@ -91,5 +90,13 @@ public class TransactionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(500, "Lỗi hệ thống: " + e.getMessage(), false));
         }
+    }
+
+    @GetMapping("/budget-list")
+    public ResponseEntity<ApiResponse<List<TransactionResponse>>> getBudgetByUserId(
+            @RequestParam Integer userId,
+            @RequestParam Integer budgetId) {
+        List<TransactionResponse> transactions = transactionService.getAllTransactionByUserIdAndBudgetId(userId, budgetId);
+        return ResponseEntity.ok(new ApiResponse<>(200, "success", transactions));
     }
 }

@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -15,8 +16,10 @@ public class BudgetResponse {
     String budgetName;
     Integer userId;
     Integer categoryId;
+    String categoryName;
     BigDecimal amountLimit;
     LocalDate startDate;
     LocalDate endDate;
     String status;
+    BigDecimal totalSpent;
 }

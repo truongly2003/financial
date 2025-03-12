@@ -3,6 +3,7 @@ const routes={
     Transaction: '/',
     Statistical:'/statistical',
     Budget: '/budget',
+    BudgetDetail: '/budget/budget-detail/:id',
     Catalog: '/catalog',
     Report: '/report',
     Option: '/option',

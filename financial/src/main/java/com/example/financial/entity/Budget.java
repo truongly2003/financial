@@ -59,6 +59,7 @@ public class Budget {
     @Lob
     @Column(name = "status")
     private String status;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = Timestamp.valueOf(LocalDateTime.now());

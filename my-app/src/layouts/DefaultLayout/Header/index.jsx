@@ -33,7 +33,7 @@ export default function Header() {
           Giao dịch
         </NavLink>
 
-        <NavLink to="/budget" className={getNavClass}>
+        <NavLink to="/budget" end={false} className={getNavClass}>
           Ngân sách
         </NavLink>
         <NavLink to="/goal" className={getNavClass}>

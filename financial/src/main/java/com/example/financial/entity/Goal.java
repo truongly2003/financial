@@ -49,6 +49,10 @@ public class Goal {
     @Column(name = "status")
     private String status;
 
+    @Lob
+    @Column(name = "description")
+    private String description;
+
     @ColumnDefault("current_timestamp()")
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;

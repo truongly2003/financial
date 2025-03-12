@@ -8,6 +8,7 @@ import {
 } from "@/services/TransactionService";
 import { Input } from "@/components/ui/input";
 import TransactionForm from "@/components/TransactionForm";
+import TransactionList from "@/components/TransactionList";
 
 function Transaction() {
   const [transaction, setTransactions] = useState([]);
@@ -199,72 +200,12 @@ function Transaction() {
           </div>
         </div>
       </div>
-      {/* end filter */}
-      {/* hover:bg-gray-200 */}
-      {/* Danh sách giao dịch */}
-      <div className="  mt-4">
-        <div className="space-y-6 ">
-          {Object.entries(transactionsToRender).map(([date, data], index) => (
-            <div key={index} className="mb-6 bg-white rounded-lg">
-              {/* Hiển thị ngày, tổng chi tiêu và tổng thu nhập */}
-              <div className="flex justify-between items-center  p-2 border-b mb-4 border-gray-300">
-                <p className="text-gray-600 font-bold">{date}</p>
-                <div className="text-sm text-gray-500 flex gap-4">
-                  <span className="font-bold text-red-500">
-                    Chi tiêu: - {data.totalExpense.toLocaleString()} đ
-                  </span>
-                  <span className="font-bold text-green-500">
-                    Thu nhập: + {data.totalIncome.toLocaleString()} đ
-                  </span>
-                </div>
-              </div>
-
-              {data.transactions.map((item, idx) => {
-                const iconData = ICONS[item.icon] || {
-                  icon: "?",
-                  color: "bg-gray-400",
-                };
-                return (
-                  <div key={idx} className="">
-                    <div
-                      className="   p-4 flex justify-between items-center  cursor-pointer ml-2 mr-2   hover:bg-gray-200 hover:rounded-lg transition"
-                      // onClick={() => handleDetailTransaction(item)}
-                      onClick={() => {
-                        setShowFormTransaction(true);
-                        setEditingTransaction(item);
-                      }}
-                    >
-                      <div className="flex items-center gap-2 ">
-                        <div
-                          className={`w-10 h-10 flex items-center justify-center ${iconData.color} rounded-full text-white `}
-                        >
-                          {iconData.icon}
-                        </div>
-                        <div>
-                          <p className="text-gray-600 font-medium">
-                            {item.categoryName}
-                          </p>
-                        </div>
-                      </div>
-                      <p
-                        className={`font-bold ${
-                          item.categoryType === "income"
-                            ? "text-green-500"
-                            : "text-red-500"
-                        }`}
-                      >
-                        {`${
-                          item.categoryType === "income" ? "+" : "-"
-                        }${item.amount.toLocaleString()} đ`}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      </div>
+    <TransactionList
+      transactionsToRender={transactionsToRender}
+      setShowFormTransaction={setShowFormTransaction}
+      setEditingTransaction={setEditingTransaction}
+      ICONS={ICONS}
+    />
 
       {/* add transaction */}
 

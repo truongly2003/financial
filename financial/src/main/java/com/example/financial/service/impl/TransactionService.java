@@ -49,6 +49,12 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
+    public List<TransactionResponse> getAllTransactionByUserIdAndBudgetId(Integer userId, Integer budgetId) {
+        List<Transaction> transactions = transactionRepository.getTransactionsByUserIdAndBudgetId(userId, budgetId);
+        return transactions.stream().map(transactionMapper::toTransactionResponse).toList();
+    }
+
+    @Override
     public TransactionResponse getTransactionById(Integer id) {
         Transaction transaction = transactionRepository.getTransactionById(id);
         return transactionMapper.toTransactionResponse(transaction);

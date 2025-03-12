@@ -11,6 +11,8 @@ public interface ITransactionService {
 
     List<TransactionResponse> getTransactionsByUserIdAndFilterRange(Integer userId, LocalDate startDate, LocalDate endDate);
 
+    List<TransactionResponse> getAllTransactionByUserIdAndBudgetId(Integer userId, Integer budgetId);
+
     TransactionResponse getTransactionById(Integer id);
 
     boolean addTransaction(TransactionRequest request);
