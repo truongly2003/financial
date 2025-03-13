@@ -1,43 +1,28 @@
+import GoalForm from "@/components/GoalForm";
+import { getAllGoalByUserId } from "@/services/GoalService";
 import { PlusCircle } from "lucide-react";
-const goals = [
-  {
-    id: 1,
-    text: "Hoàn thành bài tập React",
-    amountNeeded: 1000000,
-    currentAmount: 200000,
-    deadline: "2025-03-01",
-    status: "Đang thực hiện",
-  },
-  {
-    id: 2,
-    text: "Đọc sách 30 phút mỗi ngày",
-    amountNeeded: 0,
-    currentAmount: 0,
-    deadline: "2025-04-01",
-    status: "Đang thực hiện",
-  },
-  {
-    id: 3,
-    text: "Tập thể dục ít nhất 3 lần/tuần",
-    amountNeeded: 0,
-    currentAmount: 0,
-    deadline: "2025-02-28",
-    status: "Hoàn thành",
-  },
-];
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 function Goal() {
-  const deleteGoal = () => {
-    alert("delete goal");
-  };
-  const updateGoal = () => {
-    alert("update goal");
-  };
-  const detailGoal = () => {
-    alert("detail goal");
-  };
+  const [goal, setGoal] = useState([]);
+  const [showFormGoal, setShowFormGoal] = useState(false);
+  useEffect(() => {
+    const fetchGoal = async () => {
+      try {
+        const response = await getAllGoalByUserId(1);
+        setGoal(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchGoal();
+  },[]);
   return (
     <div className="min-h-screen mt-4 ">
-      <button className="w-[180px] flex items-center gap-2 px-4 py-2 text-white bg-emerald-500 rounded-lg shadow hover:bg-emerald-600">
+      <button
+        className="w-[180px] flex items-center gap-2 px-4 py-2 text-white bg-emerald-500 rounded-lg shadow hover:bg-emerald-600"
+        onClick={() => setShowFormGoal(true)}
+      >
         <PlusCircle size={20} />
         <span>Thêm mục tiêu</span>
       </button>
@@ -78,51 +63,39 @@ function Goal() {
               </tr>
             </thead>
             <tbody>
-              {goals.map((goal) => (
-                <tr key={goal.id} className="border-t border-gray-600">
+              {goal.map((item) => (
+                <tr key={item.id} className="border-t border-gray-600">
                   <td className="p-3 flex items-center gap-3">
                     <div className="w-8 h-8 bg-blue-500 flex items-center justify-center rounded-full text-white font-bold">
-                      {goal.text.charAt(0).toUpperCase()}
+                      {item.goalName.charAt(0).toUpperCase()}
                     </div>
-                    {goal.text}
+                    {item.goalName}
                   </td>
                   <td className="p-3">
-                    {goal.amountNeeded.toLocaleString()} VND
+                    {item.targetAmount.toLocaleString()} VND
                   </td>
                   <td className="p-3">
-                    {goal.currentAmount.toLocaleString()} VND
+                    {item.currentAmount.toLocaleString()} VND
                   </td>
-                  <td className="p-3">{goal.deadline}</td>
+                  <td className="p-3">{item.deadline}</td>
                   <td className="p-3">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        goal.status === "Đang thực hiện"
+                        item.status === "Đang thực hiện"
                           ? "bg-yellow-500 text-black"
                           : "bg-green-500 text-white"
                       }`}
                     >
-                      {goal.status}
+                      {item.status}
                     </span>
                   </td>
                   <td className="p-3">
-                    <button
-                      onClick={() => deleteGoal(goal.id)}
-                      className=" text-gray-800 px-3 py-2 rounded-lg font-bold transition-all"
-                    >
-                      xóa
-                    </button>
-                    <button
-                      onClick={() => updateGoal(goal.id)}
-                      className=" text-gray-800 px-3 py-2 rounded-lg font-bold transition-all"
-                    >
-                      sửa
-                    </button>
-                    <button
-                      onClick={() => detailGoal(goal.id)}
+                    <Link
+                      to={`/goal/goal-detail/${item.id}`}
                       className=" text-gray-800 px-3 py-2 rounded-lg font-bold transition-all"
                     >
                       chi tiết
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -130,6 +103,8 @@ function Goal() {
           </table>
         </div>
       </div>
+      {/* showFormGoal */}
+      {showFormGoal && <GoalForm onClose={() => setShowFormGoal(false)} />}
     </div>
   );
 }

@@ -13,6 +13,7 @@ public interface ITransactionService {
 
     List<TransactionResponse> getAllTransactionByUserIdAndBudgetId(Integer userId, Integer budgetId);
 
+
     TransactionResponse getTransactionById(Integer id);
 
     boolean addTransaction(TransactionRequest request);

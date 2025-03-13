@@ -1,26 +1,23 @@
-import PropTypes from "prop-types";
-import { CircleX } from "lucide-react";
 import { useState } from "react";
-
-export default function GoalForm({ onClose }) {
-  const [goal, setGoal] = useState({
+import { CircleX } from "lucide-react";
+import PropTypes from "prop-types";
+const ContributionForm = ({ onClose }) => {
+  const [contribute, setContribute] = useState({
+    goalId: 1,
     userId: 1,
-    goalName: "",
-    targetAmount: "",
-    currentAmount: "",
-    deadline: "",
-    walletId: 1,
-    status: "success",
+    amount: 1,
+    contributeDate: "",
     description: "",
   });
-  const handleChangeGoal = (e) => {
-    setGoal({
-      ...goal,
-      [e.target.name]: e.target.value,
+  const handChangeContribute = (e) => {
+    setContribute({
+      ...contribute,
+      [e.target.value]: e.target.value,
     });
   };
   const handleSubmit = () => {};
-  // const handleDelete = () => {};
+
+  const handleDelete = () => {};
   return (
     <div className="fixed inset-0  flex items-center justify-center bg-gray-900 bg-opacity-50  z-[50]">
       <div className="bg-white p-6 rounded-lg shadow-lg w-200 relative">
@@ -28,49 +25,37 @@ export default function GoalForm({ onClose }) {
         <div className="">
           <div className="flex gap-2 mt-2">
             <div className="flex-1">
-              <label className=" text-sm text-gray-600 ">Tên mục tiêu</label>
+              <label className="text-sm text-gray-600">Số tiền</label>
               <input
-                type="text"
+                type="number"
                 className="w-full p-2 border rounded-md"
-                name="goalName"
-                value={goal.goalName}
-                onChange={handleChangeGoal}
+                name="amount"
+                value={contribute.amount}
+                onChange={handChangeContribute}
               />
             </div>
             <div className="flex-1">
-              <label className="text-sm text-gray-600">Hạn chót</label>
+              <label className="text-sm text-gray-600">Ngày</label>
               <input
                 type="date"
                 className="w-full p-2 border rounded-md"
-                name="deadline"
-                value={goal.deadline}
-                onChange={handleChangeGoal}
+                name="amount"
+                value={contribute.contributionDate}
               />
             </div>
           </div>
-        </div>
-        {/* amount */}
-        <div className="">
-          <div className="flex gap-2 ">
+          <div className="flex gap-2 mt-2">
             <div className="flex-1">
-              <label className="text-sm text-gray-600">Mô tả</label>
+              <label className="text-sm text-gray-600 h-[100px]">
+                Lưu ý (tùy chọn)
+              </label>
               <textarea
                 rows="5"
                 className="w-full border rounded"
                 placeholder="Nhập nội dung tại đây..."
                 name="description"
-                value={goal.description}
-                onChange={handleChangeGoal}
-              />
-            </div>
-            <div className="flex-1">
-              <label className="text-sm text-gray-600">Số tiền mục tiêu</label>
-              <input
-                type="number"
-                className="w-full p-2 border rounded-md"
-                name="targetAmount"
-                value={goal.targetAmount}
-                onChange={handleChangeGoal}
+                value={contribute.description}
+                onChange={handChangeContribute}
               />
             </div>
           </div>
@@ -89,10 +74,15 @@ export default function GoalForm({ onClose }) {
               className="bg-red-500 text-white px-4 py-2 rounded"
               onClick={handleDelete}
             >
-              Xóa mục tiêu
+                Xóa đóng góp
             </button>
           )} */}
-
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded"
+            onClick={handleDelete}
+          >
+            Xóa đóng góp
+          </button>
           <button
             className="bg-gray-500 text-white px-4 py-2 rounded"
             onClick={onClose}
@@ -109,8 +99,8 @@ export default function GoalForm({ onClose }) {
       </div>
     </div>
   );
-}
-
-GoalForm.propTypes = {
+};
+ContributionForm.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
+export default ContributionForm;

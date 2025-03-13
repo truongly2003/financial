@@ -99,4 +99,5 @@ public class TransactionController {
         List<TransactionResponse> transactions = transactionService.getAllTransactionByUserIdAndBudgetId(userId, budgetId);
         return ResponseEntity.ok(new ApiResponse<>(200, "success", transactions));
     }
+
 }

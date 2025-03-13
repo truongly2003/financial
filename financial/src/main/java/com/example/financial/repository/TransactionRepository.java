@@ -34,13 +34,14 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
             @Param("endDate") LocalDate endDate
     );
     @Query("""
-        select t from Transaction t
-        join Category c on t.category.id = c.id
-        join Budget b on c.id = b.category.id
-        where t.user.id = :userId
-            and b.id = :budgetId
-            and c.categoryType = 'expense'
-            and t.transactionDate between b.startDate and b.endDate
-""")
+                    select t from Transaction t
+                    join Category c on t.category.id = c.id
+                    join Budget b on c.id = b.category.id
+                    where t.user.id = :userId
+                        and b.id = :budgetId
+                        and c.categoryType = 'expense'
+                        and t.transactionDate between b.startDate and b.endDate
+            """)
     List<Transaction> getTransactionsByUserIdAndBudgetId(@Param("userId") Integer userId, @Param("budgetId") Integer budgetId);
+
 }

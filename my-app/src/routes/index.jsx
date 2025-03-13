@@ -17,6 +17,7 @@ import SignUp from "@client/Authentication/SignUp";
 import Profile from "@/pages/client/setting/Profile";
 import Wallet from "@/pages/client/setting/Wallet";
 import BudgetDetail from "@/pages/client/BudgetDetail";
+import GoalDetail from "@/pages/client/GoalDetail";
 
 const publicRoutes = [
   // client
@@ -25,10 +26,13 @@ const publicRoutes = [
   { path: routes.Report, component: Report, layout: DefaultLayout },
   { path: routes.Catalog, component: Catalog, layout: DefaultLayout },
   { path: routes.Option, component: Option, layout: DefaultLayout },
+
   { path: routes.Budget, component: Budget, layout: DefaultLayout },
   { path: routes.BudgetDetail, component: BudgetDetail, layout: DefaultLayout },
 
   { path: routes.Goal, component: Goal, layout: DefaultLayout },
+  { path: routes.GoalDetail, component: GoalDetail, layout: DefaultLayout },
+
   { path: routes.Debt, component: Debt, layout: DefaultLayout },
 
   { path: routes.Login, component: Login, layout: null },

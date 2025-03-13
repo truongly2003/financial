@@ -21,7 +21,7 @@ export default function Budget() {
     fetchBudgets();
   }, []);
   return (
-    <div className="min-h-screen mt-4 ">
+    <div className="min-h-screen mt-4">
       <button
         // onClick={() => {
         //   setShowFormBudget(true);

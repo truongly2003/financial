@@ -36,7 +36,7 @@ export default function Header() {
         <NavLink to="/budget" end={false} className={getNavClass}>
           Ngân sách
         </NavLink>
-        <NavLink to="/goal" className={getNavClass}>
+        <NavLink to="/goal" end={false} className={getNavClass}>
           Mục tiêu
         </NavLink>
         {/* <NavLink to="/remind" className={getNavClass}>
