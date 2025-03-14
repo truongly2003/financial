@@ -9,7 +9,7 @@ const SidebarItem = ({ icon: Icon, label, to, children }) => {
       {to ? (
         <Link
           to={to}
-          className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-gray-200 hover:bg-gray-800 rounded-md"
+          className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-black hover:bg-gray-200 rounded-md"
         >
           <div className="flex items-center gap-2">
             {Icon && <Icon size={18} />}
@@ -18,7 +18,7 @@ const SidebarItem = ({ icon: Icon, label, to, children }) => {
         </Link>
       ) : (
         <button
-          className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-gray-200 hover:bg-gray-800 rounded-md"
+          className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-black hover:bg-gray-200 rounded-md"
           onClick={() => setOpen(!open)}
         >
           <div className="flex items-center gap-2">

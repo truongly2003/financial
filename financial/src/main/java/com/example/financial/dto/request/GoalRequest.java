@@ -19,5 +19,5 @@ public class GoalRequest {
     LocalDate deadline;
     Integer walletId;
     String status;
-
+    String description;
 }

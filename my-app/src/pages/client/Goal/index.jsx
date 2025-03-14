@@ -6,17 +6,17 @@ import { Link } from "react-router-dom";
 function Goal() {
   const [goal, setGoal] = useState([]);
   const [showFormGoal, setShowFormGoal] = useState(false);
+  const fetchGoal = async () => {
+    try {
+      const response = await getAllGoalByUserId(1);
+      setGoal(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
-    const fetchGoal = async () => {
-      try {
-        const response = await getAllGoalByUserId(1);
-        setGoal(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     fetchGoal();
-  },[]);
+  }, []);
   return (
     <div className="min-h-screen mt-4 ">
       <button
@@ -64,7 +64,7 @@ function Goal() {
             </thead>
             <tbody>
               {goal.map((item) => (
-                <tr key={item.id} className="border-t border-gray-600">
+                <tr key={item.id} className="border-t border-gray-300">
                   <td className="p-3 flex items-center gap-3">
                     <div className="w-8 h-8 bg-blue-500 flex items-center justify-center rounded-full text-white font-bold">
                       {item.goalName.charAt(0).toUpperCase()}
@@ -72,29 +72,29 @@ function Goal() {
                     {item.goalName}
                   </td>
                   <td className="p-3">
-                    {item.targetAmount.toLocaleString()} VND
+                    {item.targetAmount.toLocaleString()} đ
                   </td>
                   <td className="p-3">
-                    {item.currentAmount.toLocaleString()} VND
+                    {item.currentAmount.toLocaleString()} đ
                   </td>
                   <td className="p-3">{item.deadline}</td>
                   <td className="p-3">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        item.status === "Đang thực hiện"
+                    <div
+                      className={`px-3 w-[100px] py-1 flex justify-center rounded-full text-xs font-bold ${
+                        item.status === "in_progress"
                           ? "bg-yellow-500 text-black"
                           : "bg-green-500 text-white"
                       }`}
                     >
                       {item.status}
-                    </span>
+                    </div>
                   </td>
                   <td className="p-3">
                     <Link
                       to={`/goal/goal-detail/${item.id}`}
                       className=" text-gray-800 px-3 py-2 rounded-lg font-bold transition-all"
                     >
-                      chi tiết
+                      Chi tiết
                     </Link>
                   </td>
                 </tr>
@@ -104,7 +104,12 @@ function Goal() {
         </div>
       </div>
       {/* showFormGoal */}
-      {showFormGoal && <GoalForm onClose={() => setShowFormGoal(false)} />}
+      {showFormGoal && (
+        <GoalForm
+          onClose={() => setShowFormGoal(false)}
+          onSuccess={fetchGoal}
+        />
+      )}
     </div>
   );
 }

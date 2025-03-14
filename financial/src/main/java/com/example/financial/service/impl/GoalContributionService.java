@@ -59,6 +59,7 @@ public class GoalContributionService implements IGoalContributionService {
             goalContribution.setGoal(goal);
             goalContribution.setAmount(request.getAmount());
             goalContribution.setContributionDate(request.getContributionDate());
+            goalContribution.setDescription(request.getDescription());
             goalContributionRepository.save(goalContribution);
             return true;
         }

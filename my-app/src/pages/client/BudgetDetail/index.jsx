@@ -97,6 +97,7 @@ function BudgetDetail() {
             onClick={() => {
               setShowFormBudget(true);
               setEditingBudget(budget);
+              alert("Please select")
             }}
           >
             Chỉnh sửa ngân sách

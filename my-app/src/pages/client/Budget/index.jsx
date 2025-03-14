@@ -4,9 +4,10 @@ import { PlusCircle } from "lucide-react";
 import { getAllBudgetByUserId } from "@/services/BudgetService";
 import { Link } from "react-router-dom";
 import ProgressBar from "@/components/ProgressBar";
+import BudgetForm from "@/components/BudgetForm";
 export default function Budget() {
   const [budgets, setBudgets] = useState([]);
-  // const [showFormBudget, setShowFormBudget] = useState(false);
+  const [showFormBudget, setShowFormBudget] = useState(false);
   // const [editingBudget, setEditingBudget] = useState(null);
 
   const fetchBudgets = async () => {
@@ -23,10 +24,10 @@ export default function Budget() {
   return (
     <div className="min-h-screen mt-4">
       <button
-        // onClick={() => {
-        //   setShowFormBudget(true);
-        //   setEditingBudget(null);
-        // }}
+        onClick={() => {
+          setShowFormBudget(true);
+          // setEditingBudget(null);
+        }}
         className="w-[180px] flex items-center gap-2 px-4 py-2 text-white bg-emerald-500 rounded-lg shadow hover:bg-emerald-600"
       >
         <PlusCircle size={20} />
@@ -110,13 +111,13 @@ export default function Budget() {
         </div>
       </div>
 
-      {/* {showFormBudget && (
+      {showFormBudget && (
         <BudgetForm
           onClose={() => setShowFormBudget(false)}
-          initialBudget={editingBudget}
+          // initialBudget={editingBudget}
           onSuccess={fetchBudgets}
         />
-      )} */}
+      )}
     </div>
   );
 }

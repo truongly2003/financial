@@ -1,23 +1,54 @@
 import { useState } from "react";
 import { CircleX } from "lucide-react";
 import PropTypes from "prop-types";
-const ContributionForm = ({ onClose }) => {
-  const [contribute, setContribute] = useState({
-    goalId: 1,
-    userId: 1,
-    amount: 1,
-    contributeDate: "",
-    description: "",
-  });
+import {
+  addContribute,
+  deleteContribute,
+  updateContribute,
+} from "@/services/Goal-Contribute";
+const ContributionForm = ({ onClose, onSuccess, initialContribute }) => {
+  const [contribute, setContribute] = useState(
+    initialContribute || {
+      goalId: 1,
+      userId: 1,
+      amount: "",
+      contributionDate: new Date().toISOString().split("T")[0],
+      description: "",
+    }
+  );
   const handChangeContribute = (e) => {
     setContribute({
       ...contribute,
-      [e.target.value]: e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
-  const handleSubmit = () => {};
+  const handleSubmit = async () => {
+    try {
+      let response;
+      if (contribute.id) {
+        response = await updateContribute(contribute.id, contribute);
+      } else {
+        response = await addContribute(contribute);
+      }
+      alert(response.message);
+      onClose();
+      onSuccess();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const handleDelete = () => {};
+  const handleDelete = async () => {
+    if (!confirm("Bạn có chắc chắn xóa ngân sách  này không")) return;
+    try {
+      const response = await deleteContribute(contribute.id);
+      alert(response.message);
+      onClose();
+      onSuccess();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="fixed inset-0  flex items-center justify-center bg-gray-900 bg-opacity-50  z-[50]">
       <div className="bg-white p-6 rounded-lg shadow-lg w-200 relative">
@@ -39,8 +70,9 @@ const ContributionForm = ({ onClose }) => {
               <input
                 type="date"
                 className="w-full p-2 border rounded-md"
-                name="amount"
+                name="contributionDate"
                 value={contribute.contributionDate}
+                onChange={handChangeContribute}
               />
             </div>
           </div>
@@ -69,20 +101,15 @@ const ContributionForm = ({ onClose }) => {
           >
             Lưu
           </button>
-          {/* {budget.id && (
+          {contribute.id && (
             <button
               className="bg-red-500 text-white px-4 py-2 rounded"
               onClick={handleDelete}
             >
-                Xóa đóng góp
+              Xóa đóng góp
             </button>
-          )} */}
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded"
-            onClick={handleDelete}
-          >
-            Xóa đóng góp
-          </button>
+          )}
+
           <button
             className="bg-gray-500 text-white px-4 py-2 rounded"
             onClick={onClose}
@@ -102,5 +129,7 @@ const ContributionForm = ({ onClose }) => {
 };
 ContributionForm.propTypes = {
   onClose: PropTypes.func.isRequired,
+  initialContribute: PropTypes.object,
+  onSuccess: PropTypes.func.isRequired,
 };
 export default ContributionForm;

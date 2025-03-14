@@ -11,6 +11,8 @@ import org.mapstruct.Mapping;
 public interface GoalContributeMapper {
     @Mapping(source = "goal.id", target = "goalId")
     @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "description", target = "description")
+
     GoalContributionResponse toGoalContributionResponse(GoalContribution goalContribution);
     GoalContribution toGoalContribution(GoalContributionRequest request);
 }

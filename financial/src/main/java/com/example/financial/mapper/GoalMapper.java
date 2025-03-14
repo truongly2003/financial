@@ -10,6 +10,8 @@ import org.mapstruct.Mapping;
 public interface GoalMapper {
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "wallet.id", target = "walletId")
+    @Mapping(source = "description", target = "description")
+    
     GoalResponse toGoalResponse(Goal goal);
     Goal toGoal(GoalRequest request);
 }

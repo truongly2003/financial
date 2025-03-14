@@ -20,4 +20,6 @@ public class GoalResponse {
     LocalDate deadline;
     Integer walletId;
     String status;
+    String description;
+
 }

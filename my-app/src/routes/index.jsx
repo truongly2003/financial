@@ -1,15 +1,13 @@
 import routes from "@configs/routes";
 // layout
 import DefaultLayout from "@layouts/DefaultLayout";
+import ProfileLayout from "@/layouts/ProfileLayout";
 // client
 import Transaction from "@client/Transaction";
 import Statistical from "@client/Statistical";
-import Report from "@client/Report";
 import Catalog from "@client/Catalog";
-import Option from "@client/Option";
 import Budget from "@client/Budget";
 
-import Debt from "@/pages/client/Debt";
 import Goal from "@/pages/client/Goal";
 // authentication
 import Login from "@client/Authentication/Login";
@@ -23,9 +21,7 @@ const publicRoutes = [
   // client
   { path: routes.Transaction, component: Transaction, layout: DefaultLayout },
   { path: routes.Statistical, component: Statistical, layout: DefaultLayout },
-  { path: routes.Report, component: Report, layout: DefaultLayout },
-  { path: routes.Catalog, component: Catalog, layout: DefaultLayout },
-  { path: routes.Option, component: Option, layout: DefaultLayout },
+  { path: routes.Catalog, component: Catalog, layout: ProfileLayout },
 
   { path: routes.Budget, component: Budget, layout: DefaultLayout },
   { path: routes.BudgetDetail, component: BudgetDetail, layout: DefaultLayout },
@@ -33,13 +29,11 @@ const publicRoutes = [
   { path: routes.Goal, component: Goal, layout: DefaultLayout },
   { path: routes.GoalDetail, component: GoalDetail, layout: DefaultLayout },
 
-  { path: routes.Debt, component: Debt, layout: DefaultLayout },
-
   { path: routes.Login, component: Login, layout: null },
   { path: routes.SignUp, component: SignUp, layout: null },
 
   // settings
-  { path: routes.Profile, component: Profile, layout: DefaultLayout },
+  { path: routes.Profile, component: Profile, layout: ProfileLayout },
   { path: routes.Wallet, component: Wallet, layout: DefaultLayout },
 ];
 export default publicRoutes;

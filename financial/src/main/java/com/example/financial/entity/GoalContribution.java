@@ -31,8 +31,8 @@ public class GoalContribution {
     @Column(name = "contribution_date", nullable = false)
     private LocalDate contributionDate;
 
-    @Lob
-    @Column(name = "description")
+
+    @Column(name = "description", nullable = false)
     private String description;
 
 }

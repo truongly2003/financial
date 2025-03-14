@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getGoalById } from "@/services/GoalService";
 import ProgressBar from "@/components/ProgressBar";
 import ContributionForm from "@/components/ContributionForm";
@@ -9,31 +9,35 @@ import GoalForm from "@/components/GoalForm";
 export default function GoalDetail() {
   const { id } = useParams();
   const [goal, setGoal] = useState(null);
-  const [contribute, setContribute] = useState([]);
-  const [showFormContribution, setShowFormContribution] = useState(false);
-  const [showFormGoal, setShowFormGoal] = useState(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const goalResponse = await getGoalById(id);
-        if (goalResponse.data) {
-          setGoal(goalResponse.data);
-          const contributeResponse = await getAllContributeByGoalIdAndUserId(
-            goalResponse.data.id,
-            id
-          );
-          if (contributeResponse.data) {
-            setContribute(contributeResponse.data);
-          }
-        }
-      } catch (error) {
-        console.error("Lỗi khi tải dữ liệu:", error);
-      }
-    };
+  const [contributes, setContributes] = useState([]);
+ 
 
-    fetchData();
+  //
+  const [showFormContribution, setShowFormContribution] = useState(false);
+  const [editingContribute, setEditingContribute] = useState(null);
+  //
+  const [showFormGoal, setShowFormGoal] = useState(false);
+  const [editingGoal, setEditingGoal] = useState(null);
+  const fetchData = useCallback(async () => {
+    try {
+      const goalResponse = await getGoalById(id);
+      if (goalResponse.data) {
+        setGoal(goalResponse.data);
+        const contributeResponse = await getAllContributeByGoalIdAndUserId(
+          goalResponse.data.id,
+          id
+        );
+        if (contributeResponse.data) {
+          setContributes(contributeResponse.data);
+        }
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải dữ liệu:", error);
+    }
   }, [id]);
-  console.log(contribute);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   if (!goal) {
     return <div>Đang tải dữ liệu...</div>;
@@ -55,9 +59,11 @@ export default function GoalDetail() {
             <p className="text-gray-500 text-sm">Tất cả ví</p>
           </div>
           <div className="space-x-4">
-            <button className="w-[180px] bg-green-100 text-green-600 font-semibold py-1 px-3 rounded-lg hover:bg-green-200"
-              onClick={()=>{
+            <button
+              className="w-[180px] bg-green-100 text-green-600 font-semibold py-1 px-3 rounded-lg hover:bg-green-200"
+              onClick={() => {
                 setShowFormGoal(true);
+                setEditingGoal(goal);
               }}
             >
               Chỉnh sửa mục tiêu
@@ -66,7 +72,7 @@ export default function GoalDetail() {
               className="w-[180px] bg-green-100 text-green-600 font-semibold py-1 px-3 rounded-lg hover:bg-green-200"
               onClick={() => {
                 setShowFormContribution(true);
-                // setEditingBudget(budget);
+                setEditingContribute(null);
               }}
             >
               Thêm đóng góp
@@ -126,12 +132,16 @@ export default function GoalDetail() {
             <span className="text-gray-600 ">
               Danh sách giao dịch đã đóng góp
             </span>
-            {contribute.length > 0 ? (
+            {contributes.length > 0 ? (
               <div className="mt-2 space-y-2">
-                {contribute.map((item) => (
+                {contributes.map((item) => (
                   <div
                     key={item.id}
                     className="flex items-center justify-between bg-white cursor-pointer hover:bg-slate-200 p-2 rounded-lg"
+                    onClick={()=>{
+                      setShowFormContribution(true);
+                      setEditingContribute(item)
+                    }}
                   >
                     <div className="flex items-center space-x-2">
                       <span className="text-gray-700">
@@ -155,11 +165,19 @@ export default function GoalDetail() {
       <div></div>
       {/* form goal */}
       {showFormGoal && (
-        <GoalForm onClose={()=>setShowFormGoal(false)}/>
+        <GoalForm
+          initialGoal={editingGoal}
+          onClose={() => setShowFormGoal(false)}
+          onSuccess={fetchData}
+        />
       )}
       {/* form contribution */}
       {showFormContribution && (
-        <ContributionForm onClose={() => setShowFormContribution(false)} />
+        <ContributionForm
+          initialContribute={editingContribute}
+          onClose={() => setShowFormContribution(false)}
+          onSuccess={fetchData}
+        />
       )}
     </div>
   );

@@ -1,13 +1,14 @@
 import PropTypes from "prop-types";
 import { CircleX } from "lucide-react";
 import { useState } from "react";
-
-export default function GoalForm({ onClose }) {
-  const [goal, setGoal] = useState({
+import { addGoal, deleteGoal, updateGoal } from "@/services/GoalService";
+// onSuccess,initialGoal
+export default function GoalForm({ onClose,initialGoal,onSuccess }) {
+  const [goal, setGoal] = useState( initialGoal ||{
     userId: 1,
     goalName: "",
     targetAmount: "",
-    currentAmount: "",
+    currentAmount: 0,
     deadline: "",
     walletId: 1,
     status: "success",
@@ -19,8 +20,32 @@ export default function GoalForm({ onClose }) {
       [e.target.name]: e.target.value,
     });
   };
-  const handleSubmit = () => {};
-  // const handleDelete = () => {};
+  const handleSubmit =async () => {
+    try {
+      let response;
+      if(goal.id){
+        response=await updateGoal(goal.id,goal)
+      }else{
+        response=await addGoal(goal)
+      }
+      alert(response.message);
+      onClose();
+      onSuccess();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+ const handleDelete = async () => {
+     if (!confirm("Bạn có chắc chắn xóa ngân sách  này không")) return;
+     try {
+       const response = await deleteGoal(goal.id);
+       alert(response.message);
+       onClose();
+       onSuccess();
+     } catch (error) {
+       console.log(error);
+     }
+   };
   return (
     <div className="fixed inset-0  flex items-center justify-center bg-gray-900 bg-opacity-50  z-[50]">
       <div className="bg-white p-6 rounded-lg shadow-lg w-200 relative">
@@ -84,14 +109,14 @@ export default function GoalForm({ onClose }) {
           >
             Lưu
           </button>
-          {/* {budget.id && (
+          {goal.id && (
             <button
               className="bg-red-500 text-white px-4 py-2 rounded"
               onClick={handleDelete}
             >
               Xóa mục tiêu
             </button>
-          )} */}
+          )}
 
           <button
             className="bg-gray-500 text-white px-4 py-2 rounded"
@@ -113,4 +138,6 @@ export default function GoalForm({ onClose }) {
 
 GoalForm.propTypes = {
   onClose: PropTypes.func.isRequired,
+  initialGoal:PropTypes.object,
+  onSuccess: PropTypes.func.isRequired,
 };
