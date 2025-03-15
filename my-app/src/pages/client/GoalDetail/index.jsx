@@ -10,7 +10,6 @@ export default function GoalDetail() {
   const { id } = useParams();
   const [goal, setGoal] = useState(null);
   const [contributes, setContributes] = useState([]);
- 
 
   //
   const [showFormContribution, setShowFormContribution] = useState(false);
@@ -44,7 +43,7 @@ export default function GoalDetail() {
   }
 
   return (
-    <div className="min-h-screen mt-4">
+    <div className="min-h-screen mt-4 w-full">
       <div className="rounded-lg bg-white">
         <div className="flex items-center justify-between   p-4  ">
           {/* Thanh điều hướng */}
@@ -138,9 +137,9 @@ export default function GoalDetail() {
                   <div
                     key={item.id}
                     className="flex items-center justify-between bg-white cursor-pointer hover:bg-slate-200 p-2 rounded-lg"
-                    onClick={()=>{
+                    onClick={() => {
                       setShowFormContribution(true);
-                      setEditingContribute(item)
+                      setEditingContribute(item);
                     }}
                   >
                     <div className="flex items-center space-x-2">

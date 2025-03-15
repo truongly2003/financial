@@ -1,7 +1,7 @@
 import Header from "../DefaultLayout/Header";
 import { AlignJustify } from "lucide-react";
 import PropTypes from "prop-types";
-import Sidebar from "../DefaultLayout/SideBar";
+import Sidebar from "./SideBar";
 
 function ProfileLayout({ children }) {
   return (
@@ -12,12 +12,12 @@ function ProfileLayout({ children }) {
       </div>
 
       {/* Nội dung bên dưới Header */}
-      <div className="container mx-auto px-4 md:max-w-3xl lg:max-w-6xl">
+      <div className="container mx-auto  md:max-w-3xl lg:max-w-6xl">
         <div className="flex">
           <div className="w-1/4">
             <Sidebar />
           </div>
-          <div className="flex-1 p-4">{children}</div>
+          <div className="flex-1 ">{children}</div>
         </div>
       </div>
     </div>

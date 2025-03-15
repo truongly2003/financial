@@ -51,7 +51,7 @@ const ContributionForm = ({ onClose, onSuccess, initialContribute }) => {
   };
   return (
     <div className="fixed inset-0  flex items-center justify-center bg-gray-900 bg-opacity-50  z-[50]">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-200 relative">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[900px] relative">
         {/* Thông tin chung */}
         <div className="">
           <div className="flex gap-2 mt-2">

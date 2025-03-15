@@ -4,15 +4,15 @@ import Header from "./Header";
 import { AlignJustify } from "lucide-react";
 function DefaultLayout({ children }) {
   return (
-    <div className=" bg-gray-200">
+    <div className=" bg-gray-200 min-h-screen">
       {/* Header cố định trên cùng */}
-      <div className="sticky top-0 z-40 bg-white ">
+      <div className="sticky top-0 z-10 bg-white ">
         <Header icon={AlignJustify} />
       </div>
 
       {/* Nội dung bên dưới Header */}
-      <div>
-        <div className=" mx-auto px-4 md:max-w-3xl lg:max-w-6xl ">
+      <div className="w-full">
+        <div className="  max-w-6xl mx-auto px-4    ">
           <div className="w-full">{children}</div>
         </div>
       </div>
